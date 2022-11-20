@@ -42,7 +42,7 @@
  *		- This scripts supports only .DUF files, because of this some Genesis 1 poses that come as .DSB files are not supported.
  */
 
-// Missing:
+// Missing bone mappings:
 // Genesis 1/2 carpal, upper chest, upper neck
 
 /*
