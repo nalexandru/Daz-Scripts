@@ -1,0 +1,675 @@
+// DAZ Studio version 4.9.2.0 filetype DAZ Script
+
+/*
+ * G9 Pose Converter
+ * Copyright (c) 2022 Alexandru Naiman <alexandru.naiman@protonmail.ch>
+ *
+ * This script is based on G8F/M Pose Transfer to G9, copyright Richard Williams 2022. - https://www.renderosity.com/freestuff/items/93219/g8fm-pose-transfer-to-g9
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+ * 		in the documentation and/or other materials provided with the distribution.
+ * 3. Redistributions in any from must be free of charge.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+
+/*
+ * Installation:
+ *		1. Copy the contents of the archive to your content library
+ *		2. Go to the script in the Content Library (Scripts > n_alexandru > G9 Pose Converter), right click and select Add Custom Action and click OK.
+ *
+ * Usage:
+ *		1. Select a Genesis 9 figure in your scene
+ *		2. Select a pose preset from the Smart Content or Content Library pane
+ *		3. Run the script from Scripts > G9 Pose Converter (the custom action added in step 2 of the installation)
+ *			- If the source figure generation can’t be detected automatically, a dialog will appear asking you to select it
+ *
+ * Options: (hold down the key when running the script)
+ *		- Alt (Option on macOS) will force the figure select dialog to appear
+ *		- Ctrl (Command on macOS) will zero the G9 pose first.
+ *
+ * Known Issues & Limitations:
+ *		- Poses will require a little adjustment after conversion
+ *		- The face rig with the exception of the eyes is not converted.
+ *		- This scripts supports only .DUF files, because of this some Genesis 1 poses that come as .DSB files are not supported.
+ */
+
+// Missing:
+// Genesis 1/2 carpal, upper chest, upper neck
+
+/*
+ * Bone map definitions
+ * parameters:
+ * key - source figure bone name
+ * name - G9 bone name
+ * adj - adjustment array in the format { name: "<value name> (eg. rotation/x)", value: <float value that will be added to the pose value> }
+ * whitelist / blacklist for value names
+ * -------------------------------------
+ * DSON file format specification: http://docs.daz3d.com/doku.php/public/dson_spec/start
+ */
+
+var g1BoneMap =
+{
+	hip: { name: "hip" },
+	pelvis: { name: "pelvis" },
+	lThigh: { name: "l_thigh", adj: [{ name: "rotation/x", apply: function (x) { return x - 1.0 } }] },
+	lShin: { name: "l_shin" },
+	lFoot: { name: "l_foot", adj: [{ name: "rotation/x", apply: function (x) { return x + 2.0 } }] },
+	lToe: { name: "l_toes" },
+	lSmallToe4: { name: "l_pinkytoe1" },
+	lSmallToe3: { name: "l_ringtoe1" },
+	lSmallToe2: { name: "l_midtoe1" },
+	lSmallToe1: { name: "l_indextoe1" },
+	lBigToe: { name: "l_bigtoe1" },
+	rThigh: { name: "r_thigh", adj: [{ name: "rotation/x", apply: function (x) { return x - 1.0 } }] },
+	rShin: { name: "r_shin" },
+	rFoot: { name: "r_foot", adj: [{ name: "rotation/x", apply: function (x) { return x + 2.0 } }] },
+	rToe: { name: "r_toes" },
+	rSmallToe4: { name: "l_pinkytoe1" },
+	rSmallToe3: { name: "l_ringtoe1" },
+	rSmallToe2: { name: "l_midtoe1" },
+	rSmallToe1: { name: "l_indextoe1" },
+	rBigToe: { name: "l_bigtoe1" },
+	abdomen: { name: "spine1" },
+	abdomen2: { name: "spine2" },
+	chest: { name: "spine3" },
+	//chestUpper: { name: "spine4" },
+	lCollar: { name: "l_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x + 1.0 } }] },
+	lShldr: { name: "l_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }] },
+	lForeArm: { name: "l_forearm", adj: [{ name: "rotation/y", apply: function (x) { return x - 10.0 } }, { name: "rotation/x", apply: function (x) { return x - 5.0 } }] },
+	lHand: { name: "l_hand", adj: [{ name: "rotation/y", apply: function (x) { return x - 16.0 } }, { name: "rotation/z", apply: function (x) { return x + 2.75 } }] },
+	lThumb1: { name: "l_thumb1" },
+	lThumb2: { name: "l_thumb2", adj: [{ name: "rotation/y", apply: function (x) { return x + 9.70 } }] },
+	lThumb3: { name: "l_thumb3", adj: [{ name: "rotation/y", apply: function (x) { return x + 24.20 } }] },
+	lIndex1: { name: "l_index1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] },
+	lIndex2: { name: "l_index2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] },
+	lIndex3: { name: "l_index3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] },
+	lMid1: { name: "l_mid1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] },
+	lMid2: { name: "l_mid2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] },
+	lMid3: { name: "l_mid3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] },
+	lRing1: { name: "l_ring1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] },
+	lRing2: { name: "l_ring2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] },
+	lRing3: { name: "l_ring3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] },
+	lPinky1: { name: "l_pinky1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] },
+	lPinky2: { name: "l_pinky2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] },
+	lPinky3: { name: "l_pinky3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] },
+
+	rCollar: { name: "r_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x - 1.0 } }] },
+	rShldr: { name: "r_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
+	rForeArm: { name: "r_forearm", adj: [{ name: "rotation/y", apply: function (x) { return x + 10.0 } }, { name: "rotation/x", apply: function (x) { return x - 5.0 } }] },
+	rHand: { name: "r_hand", adj: [{ name: "rotation/y", apply: function (x) { return x + 16.0 } }, { name: "rotation/z", apply: function (x) { return x - 2.75 } }] },
+	rThumb1: { name: "r_thumb1" },
+	rThumb2: { name: "r_thumb2", adj: [{ name: "rotation/y", apply: function (x) { return x - 9.70 } }] },
+	rThumb3: { name: "r_thumb3", adj: [{ name: "rotation/y", apply: function (x) { return x - 24.20 } }] },
+	rIndex1: { name: "r_index1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] },
+	rIndex2: { name: "r_index2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] },
+	rIndex3: { name: "r_index3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] },
+	rMid1: { name: "r_mid1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] },
+	rMid2: { name: "r_mid2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] },
+	rMid3: { name: "r_mid3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] },
+	rRing1: { name: "r_ring1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] },
+	rRing2: { name: "r_ring2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] },
+	rRing3: { name: "r_ring3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] },
+	rPinky1: { name: "r_pinky1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] },
+	rPinky2: { name: "r_pinky2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] },
+	rPinky3: { name: "r_pinky3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] },
+	lPectoral: { name: "l_pectoral" },
+	rPectoral: { name: "r_pectoral" },
+	neck: { name: "neck1" },
+	head: { name: "head" },
+	lEye: { name: "l_eye", adj: [
+		{ name: "rotation/x", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
+	] },
+	rEye: { name: "r_eye", adj: [
+		{ name: "rotation/x", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
+	] },
+	root: { name: "Genesis9" }
+};
+
+var g2BoneMap =
+{
+	hip: { name: "hip" },
+	pelvis: { name: "pelvis" },
+	lThigh: { name: "l_thigh" },
+	lShin: { name: "l_shin" },
+	lFoot: { name: "l_foot" },
+	lToe: { name: "l_toes" },
+	lSmallToe4: { name: "l_pinkytoe1" },
+	lSmallToe3: { name: "l_ringtoe1" },
+	lSmallToe2: { name: "l_midtoe1" },
+	lSmallToe1: { name: "l_indextoe1" },
+	lBigToe: { name: "l_bigtoe1" },
+	rThigh: { name: "r_thigh" },
+	rShin: { name: "r_shin" },
+	rFoot: { name: "r_foot" },
+	rToe: { name: "r_toes" },
+	rSmallToe4: { name: "l_pinkytoe1" },
+	rSmallToe3: { name: "l_ringtoe1" },
+	rSmallToe2: { name: "l_midtoe1" },
+	rSmallToe1: { name: "l_indextoe1" },
+	rBigToe: { name: "l_bigtoe1" },
+	abdomen: { name: "spine1" },
+	abdomen2: { name: "spine2" },
+	chest: { name: "spine3" },
+	//chestUpper: { name: "spine4" },
+	lCollar: { name: "l_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x + 1.0 } }] },
+	lShldr: { name: "l_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }] },
+	lForeArm: { name: "l_forearm", adj: [{ name: "rotation/y", apply: function (x) { return x - 10.0 } }, { name: "rotation/x", apply: function (x) { return x - 5.0 } }] },
+	lHand: { name: "l_hand", adj: [{ name: "rotation/y", apply: function (x) { return x - 16.0 } }, { name: "rotation/z", apply: function (x) { return x + 2.75 } }] },
+	lThumb1: { name: "l_thumb1" },
+	lThumb2: { name: "l_thumb2" },
+	lThumb3: { name: "l_thumb3" },
+	lIndex1: { name: "l_index1" },
+	lIndex2: { name: "l_index2" },
+	lIndex3: { name: "l_index3" },
+	lMid1: { name: "l_mid1" },
+	lMid2: { name: "l_mid2" },
+	lMid3: { name: "l_mid3" },
+	lRing1: { name: "l_ring1" },
+	lRing2: { name: "l_ring2" },
+	lRing3: { name: "l_ring3" },
+	lPinky1: { name: "l_pinky1" },
+	lPinky2: { name: "l_pinky2" },
+	lPinky3: { name: "l_pinky3" },
+	rCollar: { name: "r_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x - 1.0 } }] },
+	rShldr: { name: "r_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
+	rForeArm: { name: "r_forearm", adj: [{ name: "rotation/y", apply: function (x) { return x + 10.0 } }, { name: "rotation/x", apply: function (x) { return x - 5.0 } }] },
+	rHand: { name: "r_hand", adj: [{ name: "rotation/y", apply: function (x) { return x + 16.0 } }, { name: "rotation/z", apply: function (x) { return x - 2.75 } }] },
+	rThumb1: { name: "r_thumb1" },
+	rThumb2: { name: "r_thumb2" },
+	rThumb3: { name: "r_thumb3" },
+	rIndex1: { name: "r_index1" },
+	rIndex2: { name: "r_index2" },
+	rIndex3: { name: "r_index3" },
+	rMid1: { name: "r_mid1" },
+	rMid2: { name: "r_mid2" },
+	rMid3: { name: "r_mid3" },
+	rRing1: { name: "r_ring1" },
+	rRing2: { name: "r_ring2" },
+	rRing3: { name: "r_ring3" },
+	rPinky1: { name: "r_pinky1" },
+	rPinky2: { name: "r_pinky2" },
+	rPinky3: { name: "r_pinky3" },
+	lPectoral: { name: "l_pectoral" },
+	rPectoral: { name: "r_pectoral" },
+	neck: { name: "neck1" },
+	head: { name: "head" },
+	lEye: { name: "l_eye", adj: [
+		{ name: "rotation/x", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
+	] },
+	rEye: { name: "r_eye", adj: [
+		{ name: "rotation/x", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
+		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
+	] },
+	root: { name: "Genesis9" }
+};
+
+var g3BoneMap =
+{
+	hip: { name: "hip" },
+	pelvis: { name: "pelvis" },
+	lThighBend: { name: "l_thigh", blacklist: [ "rotation/y" ] },
+	lThighTwist: { name: "l_thigh", adj: [{ name: "rotation/y", apply: function (x) { return x + 3.0 } }], whitelist: [ "rotation/y" ] },
+	lShin: { name: "l_shin" },
+	lFoot: { name: "l_foot", adj: [{ name: "rotation/z", apply: function (x) { return x - 3.0 } }] },
+	lMetatarsals: { name: "l_metatarsal" },
+	lToe: { name: "l_toes" },
+	lSmallToe4: { name: "l_pinkytoe1" },
+	lSmallToe4_2: { name: "l_pinkytoe2" },
+	lSmallToe3: { name: "l_ringtoe1" },
+	lSmallToe3_2: { name: "l_ringtoe2" },
+	lSmallToe2: { name: "l_midtoe1" },
+	lSmallToe2_2: { name: "l_midtoe2" },
+	lSmallToe1: { name: "l_indextoe1" },
+	lSmallToe1_2: { name: "l_indextoe2" },
+	lBigToe: { name: "l_bigtoe1" },
+	lBigToe_2: { name: "l_bigtoe2" },
+	rThighBend: { name: "r_thigh", blacklist: [ "rotation/y" ] },
+	rThighTwist: { name: "r_thigh", adj: [{ name: "rotation/y", apply: function (x) { return x - 3.0 } }], whitelist: [ "rotation/y" ] },
+	rShin: { name: "r_shin" },
+	rFoot: { name: "r_foot", adj: [{ name: "rotation/z", apply: function (x) { return x + 3.0 } }] },
+	rMetatarsals: { name: "r_metatarsal" },
+	rToe: { name: "r_toes" },
+	rSmallToe4: { name: "l_pinkytoe1" },
+	rSmallToe4_2: { name: "l_pinkytoe2" },
+	rSmallToe3: { name: "l_ringtoe1" },
+	rSmallToe3_2: { name: "l_ringtoe2" },
+	rSmallToe2: { name: "l_midtoe1" },
+	rSmallToe2_2: { name: "l_midtoe2" },
+	rSmallToe1: { name: "l_indextoe1" },
+	rSmallToe1_2: { name: "l_indextoe2" },
+	rBigToe: { name: "l_bigtoe1" },
+	rBigToe_2: { name: "l_bigtoe2" },
+	abdomenLower: { name: "spine1" },
+	abdomenUpper: { name: "spine2" },
+	chestLower: { name: "spine3" },
+	chestUpper: { name: "spine4" },
+	lCollar: { name: "l_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x + 1.0 } }] },
+	lShldrBend: { name: "l_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }], blacklist: [ "rotation/x" ] },
+	lShldrTwist: { name: "l_upperarm", whitelist: [ "rotation/x" ] },
+	lForearmBend: { name: "l_forearm", blacklist: [ "rotation/x" ] },
+	lForearmTwist: { name: "l_forearm", whitelist: [ "rotation/x" ] },
+	lHand: { name: "l_hand" },
+	lThumb1: { name: "l_thumb1" },
+	lThumb2: { name: "l_thumb2" },
+	lThumb3: { name: "l_thumb3" },
+	lCarpal1: { name: "l_indexmetacarpal" },
+	lIndex1: { name: "l_index1" },
+	lIndex2: { name: "l_index2" },
+	lIndex3: { name: "l_index3" },
+	lCarpal2: { name: "l_midmetacarpal" },
+	lMid1: { name: "l_mid1" },
+	lMid2: { name: "l_mid2" },
+	lMid3: { name: "l_mid3" },
+	lCarpal3: { name: "l_ringmetacarpal" },
+	lRing1: { name: "l_ring1" },
+	lRing2: { name: "l_ring2" },
+	lRing3: { name: "l_ring3" },
+	lCarpal4: { name: "l_pinkymetacarpal" },
+	lPinky1: { name: "l_pinky1" },
+	lPinky2: { name: "l_pinky2" },
+	lPinky3: { name: "l_pinky3" },
+	rCollar: { name: "r_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x - 1.0 } }] },
+	rShldrBend: { name: "r_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }], blacklist: [ "rotation/x" ] },
+	rShldrTwist: { name: "r_upperarm", whitelist: [ "rotation/x" ] },
+	rForearmBend: { name: "r_forearm", blacklist: [ "rotation/x" ] },
+	rForearmTwist: { name: "r_forearm", whitelist: [ "rotation/x" ] },
+	rHand: { name: "r_hand" },
+	rThumb1: { name: "r_thumb1" },
+	rThumb2: { name: "r_thumb2" },
+	rThumb3: { name: "r_thumb3" },
+	rCarpal1: { name: "r_indexmetacarpal" },
+	rIndex1: { name: "r_index1" },
+	rIndex2: { name: "r_index2" },
+	rIndex3: { name: "r_index3" },
+	rCarpal2: { name: "r_midmetacarpal" },
+	rMid1: { name: "r_mid1" },
+	rMid2: { name: "r_mid2" },
+	rMid3: { name: "r_mid3" },
+	rCarpal3: { name: "r_ringmetacarpal" },
+	rRing1: { name: "r_ring1" },
+	rRing2: { name: "r_ring2" },
+	rRing3: { name: "r_ring3" },
+	rCarpal4: { name: "r_pinkymetacarpal" },
+	rPinky1: { name: "r_pinky1" },
+	rPinky2: { name: "r_pinky2" },
+	rPinky3: { name: "r_pinky3" },
+	lPectoral: { name: "l_pectoral" },
+	rPectoral: { name: "r_pectoral" },
+	neckLower: { name: "neck1" },
+	neckUpper: { name: "neck2" },
+	head: { name: "head" },
+	lEye: { name: "l_eye" },
+	rEye: { name: "r_eye" },
+	root: { name: "Genesis9" }
+};
+
+var g8BoneMap =
+{
+	hip: { name: "hip" },
+	pelvis: { name: "pelvis" },
+	lThighBend: { name: "l_thigh", adj: [{ name: "rotation/z", apply: function (x) { return x + 6.57 } }], blacklist: [ "rotation/y" ] },
+	lThighTwist: { name: "l_thigh", whitelist: [ "rotation/y" ] },
+	lShin: { name: "l_shin" },
+	lFoot: { name: "l_foot", adj: [{ name: "rotation/z", apply: function (x) { return x - 3.0 } }] },
+	lMetatarsals: { name: "l_metatarsal" },
+	lToe: { name: "l_toes" },
+	lSmallToe4: { name: "l_pinkytoe1" },
+	lSmallToe4_2: { name: "l_pinkytoe2" },
+	lSmallToe3: { name: "l_ringtoe1" },
+	lSmallToe3_2: { name: "l_ringtoe2" },
+	lSmallToe2: { name: "l_midtoe1" },
+	lSmallToe2_2: { name: "l_midtoe2" },
+	lSmallToe1: { name: "l_indextoe1" },
+	lSmallToe1_2: { name: "l_indextoe2" },
+	lBigToe: { name: "l_bigtoe1" },
+	lBigToe_2: { name: "l_bigtoe2" },
+	rThighBend: { name: "r_thigh", adj: [{ name: "rotation/z", apply: function (x) { return x - 6.57 } }], blacklist: [ "rotation/y" ] },
+	rThighTwist: { name: "r_thigh", whitelist: [ "rotation/y" ] },
+	rShin: { name: "r_shin" },
+	rFoot: { name: "r_foot", adj: [{ name: "rotation/z", apply: function (x) { return x + 3.0 } }] },
+	rMetatarsals: { name: "r_metatarsal" },
+	rToe: { name: "r_toes" },
+	rSmallToe4: { name: "l_pinkytoe1" },
+	rSmallToe4_2: { name: "l_pinkytoe2" },
+	rSmallToe3: { name: "l_ringtoe1" },
+	rSmallToe3_2: { name: "l_ringtoe2" },
+	rSmallToe2: { name: "l_midtoe1" },
+	rSmallToe2_2: { name: "l_midtoe2" },
+	rSmallToe1: { name: "l_indextoe1" },
+	rSmallToe1_2: { name: "l_indextoe2" },
+	rBigToe: { name: "l_bigtoe1" },
+	rBigToe_2: { name: "l_bigtoe2" },
+	abdomenLower: { name: "spine1" },
+	abdomenUpper: { name: "spine2" },
+	chestLower: { name: "spine3" },
+	chestUpper: { name: "spine4" },
+	lCollar: { name: "l_shoulder" },
+	lShldrBend: { name: "l_upperarm", blacklist: [ "rotation/x" ] },
+	lShldrTwist: { name: "l_upperarm", whitelist: [ "rotation/x" ] },
+	lForearmBend: { name: "l_forearm", blacklist: [ "rotation/x" ] },
+	lForearmTwist: { name: "l_forearm", whitelist: [ "rotation/x" ] },
+	lHand: { name: "l_hand" },
+	lThumb1: { name: "l_thumb1" },
+	lThumb2: { name: "l_thumb2" },
+	lThumb3: { name: "l_thumb3" },
+	lCarpal1: { name: "l_indexmetacarpal" },
+	lIndex1: { name: "l_index1" },
+	lIndex2: { name: "l_index2" },
+	lIndex3: { name: "l_index3" },
+	lCarpal2: { name: "l_midmetacarpal" },
+	lMid1: { name: "l_mid1" },
+	lMid2: { name: "l_mid2" },
+	lMid3: { name: "l_mid3" },
+	lCarpal3: { name: "l_ringmetacarpal" },
+	lRing1: { name: "l_ring1" },
+	lRing2: { name: "l_ring2" },
+	lRing3: { name: "l_ring3" },
+	lCarpal4: { name: "l_pinkymetacarpal" },
+	lPinky1: { name: "l_pinky1" },
+	lPinky2: { name: "l_pinky2" },
+	lPinky3: { name: "l_pinky3" },
+	rCollar: { name: "r_shoulder" },
+	rShldrBend: { name: "r_upperarm", blacklist: [ "rotation/x" ] },
+	rShldrTwist: { name: "r_upperarm", whitelist: [ "rotation/x" ] },
+	rForearmBend: { name: "r_forearm", blacklist: [ "rotation/x" ] },
+	rForearmTwist: { name: "r_forearm", whitelist: [ "rotation/x" ] },
+	rHand: { name: "r_hand" },
+	rThumb1: { name: "r_thumb1" },
+	rThumb2: { name: "r_thumb2" },
+	rThumb3: { name: "r_thumb3" },
+	rCarpal1: { name: "r_indexmetacarpal" },
+	rIndex1: { name: "r_index1" },
+	rIndex2: { name: "r_index2" },
+	rIndex3: { name: "r_index3" },
+	rCarpal2: { name: "r_midmetacarpal" },
+	rMid1: { name: "r_mid1" },
+	rMid2: { name: "r_mid2" },
+	rMid3: { name: "r_mid3" },
+	rCarpal3: { name: "r_ringmetacarpal" },
+	rRing1: { name: "r_ring1" },
+	rRing2: { name: "r_ring2" },
+	rRing3: { name: "r_ring3" },
+	rCarpal4: { name: "r_pinkymetacarpal" },
+	rPinky1: { name: "r_pinky1" },
+	rPinky2: { name: "r_pinky2" },
+	rPinky3: { name: "r_pinky3" },
+	lPectoral: { name: "l_pectoral" },
+	rPectoral: { name: "r_pectoral" },
+	neckLower: { name: "neck1" },
+	neckUpper: { name: "neck2" },
+	head: { name: "head" },
+	lEye: { name: "l_eye" },
+	rEye: { name: "r_eye" },
+	root: { name: "Genesis9" }
+};
+
+function getContentLibraryAsset(pane)
+{
+	var assets = pane.getSelectedAssets();
+	return assets.length ? assets[0] : null;
+}
+
+function getSmartContentAsset(pane)
+{
+	var tab = pane.getCurrentTab();
+
+	var view = tab.getProductAssetsView();
+	var assets = view && view.visible ? tab.getProductAssetsView().getContentTab().getSelectedAssets() : tab.getSelectedAssets();
+
+	return assets && assets.length ? assets[0] : null;
+}
+
+function showFigureSelect()
+{
+	var style = App.getStyle();
+	var dlg = new DzBasicDialog();
+
+	dlg.caption = "Select figure";
+
+	var lbl = new DzLabel(dlg);
+	lbl.setFixedHeight(style.pixelMetric("DZ_ButtonHeight"));
+
+	lbl.text = "Select source figure:";
+
+	dlg.addWidget(lbl);
+
+	var cbx = new DzComboBox(dlg);
+	cbx.setFixedHeight(style.pixelMetric("DZ_ButtonHeight"));
+
+	cbx.addItem("Genesis 8");
+	cbx.addItem("Genesis 3");
+	cbx.addItem("Genesis 2");
+	cbx.addItem("Genesis");
+
+	dlg.addWidget(cbx);
+
+	dlg.setFixedSize(dlg.getWidget().minimumSizeHint.width, dlg.getWidget().minimumSizeHint.height);
+	
+	if (!dlg.exec())
+		return -1;
+
+	return cbx.currentItem;
+}
+
+(function()
+{
+	var list = Scene.getSelectedSkeletonList();
+	if (list.length != 1 || list[0].assetId != "Genesis9") {
+		MessageBox.critical(qsTr("Select a Genesis 9 figure !"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+	
+	var g9 = list[0];
+
+	var pMgr = MainWindow.getPaneMgr();
+	if (!pMgr) {
+		MessageBox.critical(qsTr("No pane manager"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var asset = null, pane = pMgr.findPane("DzContentLibraryPane");
+	if (pane.visible)
+		asset = getContentLibraryAsset(pane);
+
+	pane = pMgr.findPane("DzSmartContentPane");
+	if (pane.visible)
+		asset = getSmartContentAsset(pane);
+
+	if (!asset) {
+		MessageBox.critical(qsTr("Select a pose preset in the Content Library or Smart Content pane !"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var file = new DzGZFile(asset.getAsLocalFile());
+	if (!file.open(DzGZFile.ReadOnly)) {
+		MessageBox.critical(qsTr("Failed to open file"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var json = file.read();
+	file.close();
+
+	if (!json) {
+		MessageBox.critical(qsTr("Failed to read file"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	// some .duf (this happened with two different Genesis 3 pose sets) files have garbage at the start
+	var jsonStartChar = json.indexOf("{");
+	if (jsonStartChar != 0)
+		json = json.substring(jsonStartChar);
+
+	var preset = JSON.parse(json);
+
+	var hierarchical = false;
+	if (preset.asset_info.type == "preset_hierarchical_pose") {
+		hierarchical = true;
+	} else if (preset.asset_info.type != "preset_pose") {
+		MessageBox.critical(qsTr("The selected item is not a pose preset"), qsTr("G9 Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var boneMap = null;
+
+	var mKeys = App.modifierKeyState();
+	var shiftDown = mKeys & 0x02000000;
+	var ctrlDown = mKeys & 0x04000000;
+	var altDown = mKeys & 0x08000000;
+	
+	if (!altDown && asset.compatibilities.length == 1) {
+		if (asset.compatibilities[0] == "/Genesis 8/Female" || asset.compatibilities[0] == "/Genesis 8/Male") {
+			boneMap = g8BoneMap;
+		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
+			boneMap = g3BoneMap;
+		}
+	}
+
+	if (boneMap == null) {
+		switch (showFigureSelect()) {
+		case 0: boneMap = g8BoneMap; break;
+		case 1: boneMap = g3BoneMap; break;
+		case 2: boneMap = g2BoneMap; break;
+		case 3: boneMap = g1BoneMap; break;
+		case -1: return;
+		}
+	}
+
+	setBusyCursor();
+	startProgress(qsTr("Converting pose"), boneMap.length, false, true);
+
+	// Zero G9 figure if requested
+	if (ctrlDown)
+		MainWindow.getActionMgr().findAction("DzZeroFigurePoseAction").trigger();
+
+	// Convert Pose
+	beginUndo();
+
+	var maxTime = 0.0;
+	var timeStep = Scene.getTimeStep();
+
+	for (var i = 0; i < preset.scene.animations.length; ++i) {
+		var chn = preset.scene.animations[i];
+
+		for (var j = 0; j < chn.keys.length; ++j) {
+			var time = 30 * chn.keys[j][0] * timeStep;
+			maxTime = time > maxTime ? time : maxTime;
+		}
+	}
+
+	if (maxTime > Scene.getAnimRange().end) {
+		if (MessageBox.question(
+				qsTr("The selected preset contains more frames than the timeline. Extend the timeline ?"),
+				qsTr("G9 Pose Converter"), qsTr("&Yes"), qsTr("&No")) == 0)
+			Scene.setAnimRange(new DzTimeRange(0, maxTime));
+	}
+
+	var ignoreLimits = 0;
+	var lastFrame = Scene.getAnimRange().end / timeStep;
+
+	for (var i = 0; i < preset.scene.animations.length; ++i) {
+		var chn = preset.scene.animations[i];
+		var uri = new DzUri(chn.url);
+
+		// uri.nodePath -> bone name, first array element for hierarchical poses or second for non-hierarchical poses
+		// uri.propertyPath[0] -> property name (rotation/translation/scale)
+		// uri.propertyPath[1] -> x/y/z
+
+		var boneName = null;
+		if (uri.nodePath.length == 1 && uri.nodePath[0] == "@selection")
+			boneName = "root"
+		else
+			boneName = hierarchical ? uri.nodePath[0] : uri.nodePath[1];
+
+		// skip the scale, it will disort the figure
+		if (uri.propertyPath[0] == "scale")
+			continue;
+
+		var m = boneMap[boneName];
+		if (!m)
+			continue;
+
+		var dstBone = g9.findBone(m.name);
+		if (!dstBone) {
+			if (m.name != "Genesis9")
+				continue;
+			dstBone = g9;
+		}
+
+		var propName = uri.propertyPath[0] + "/" + uri.propertyPath[1];
+		if (m.whitelist) {
+			var skip = true;
+
+			for (var j = 0; j < m.whitelist.length; ++j) {
+				if (m.whitelist[j] != propName)
+					continue;
+				
+				skip = false;
+				break;
+			}
+
+			if (skip)
+				continue;
+		}
+
+		if (m.blacklist) {
+			var skip = false;
+
+			for (var j = 0; j < m.blacklist.length; ++j) {
+				if (m.blacklist[j] != propName)
+					continue;
+
+				skip = true;
+				break;
+			}
+
+			if (skip)
+				continue;
+		}
+
+		var dstProp = dstBone.findPropertyReference(new DzUri(dstBone.assetId + ":?" + propName));
+		if (!dstProp)
+			continue;
+
+		for (var j = 0; j < chn.keys.length; ++j) {
+			var time = lastFrame * chn.keys[j][0] * timeStep;
+			var value = chn.keys[j][1];
+
+			for (var k = 0; m.adj && k < m.adj.length; ++k) {
+				if (m.adj[k].name == propName)
+					value = m.adj[k].apply(value);
+			}
+
+			if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
+				if (ignoreLimits == 0)
+					ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
+
+				if (ignoreLimits == 1)
+					dstProp.setIsClamped(false);
+			}
+
+			dstProp.setValue(time, value);
+		}
+
+		stepProgress(1);
+	}
+
+	finishProgress();
+	acceptUndo("G9 Pose Converter: " + asset.displayName);
+	clearBusyCursor();
+})();
