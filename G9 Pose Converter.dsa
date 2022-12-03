@@ -2,7 +2,7 @@
 
 /*
  * G9 Pose Converter
- * Copyright (c) 2022 Alexandru Naiman <alexandru.naiman@protonmail.ch>
+ * Copyright (c) 2022 Alexandru Naiman <alexandru.naiman@protonmail.ch>. All rights reserved.
  *
  * This script is based on G8F/M Pose Transfer to G9, copyright Richard Williams 2022. - https://www.renderosity.com/freestuff/items/93219/g8fm-pose-transfer-to-g9
  *
@@ -42,6 +42,11 @@
  *		- This scripts supports only .DUF files, because of this some Genesis 1 poses that come as .DSB files are not supported.
  */
 
+/*
+ * History:
+ * 2022-12-03: Corrected right toe mapping
+ */
+
 // Missing bone mappings:
 // Genesis 1/2 carpal, upper chest, upper neck
 
@@ -73,11 +78,11 @@ var g1BoneMap =
 	rShin: { name: "r_shin" },
 	rFoot: { name: "r_foot", adj: [{ name: "rotation/x", apply: function (x) { return x + 2.0 } }] },
 	rToe: { name: "r_toes" },
-	rSmallToe4: { name: "l_pinkytoe1" },
-	rSmallToe3: { name: "l_ringtoe1" },
-	rSmallToe2: { name: "l_midtoe1" },
-	rSmallToe1: { name: "l_indextoe1" },
-	rBigToe: { name: "l_bigtoe1" },
+	rSmallToe4: { name: "r_pinkytoe1" },
+	rSmallToe3: { name: "r_ringtoe1" },
+	rSmallToe2: { name: "r_midtoe1" },
+	rSmallToe1: { name: "r_indextoe1" },
+	rBigToe: { name: "r_bigtoe1" },
 	abdomen: { name: "spine1" },
 	abdomen2: { name: "spine2" },
 	chest: { name: "spine3" },
@@ -155,11 +160,11 @@ var g2BoneMap =
 	rShin: { name: "r_shin" },
 	rFoot: { name: "r_foot" },
 	rToe: { name: "r_toes" },
-	rSmallToe4: { name: "l_pinkytoe1" },
-	rSmallToe3: { name: "l_ringtoe1" },
-	rSmallToe2: { name: "l_midtoe1" },
-	rSmallToe1: { name: "l_indextoe1" },
-	rBigToe: { name: "l_bigtoe1" },
+	rSmallToe4: { name: "r_pinkytoe1" },
+	rSmallToe3: { name: "r_ringtoe1" },
+	rSmallToe2: { name: "r_midtoe1" },
+	rSmallToe1: { name: "r_indextoe1" },
+	rBigToe: { name: "r_bigtoe1" },
 	abdomen: { name: "spine1" },
 	abdomen2: { name: "spine2" },
 	chest: { name: "spine3" },
@@ -245,16 +250,16 @@ var g3BoneMap =
 	rFoot: { name: "r_foot", adj: [{ name: "rotation/z", apply: function (x) { return x + 3.0 } }] },
 	rMetatarsals: { name: "r_metatarsal" },
 	rToe: { name: "r_toes" },
-	rSmallToe4: { name: "l_pinkytoe1" },
-	rSmallToe4_2: { name: "l_pinkytoe2" },
-	rSmallToe3: { name: "l_ringtoe1" },
-	rSmallToe3_2: { name: "l_ringtoe2" },
-	rSmallToe2: { name: "l_midtoe1" },
-	rSmallToe2_2: { name: "l_midtoe2" },
-	rSmallToe1: { name: "l_indextoe1" },
-	rSmallToe1_2: { name: "l_indextoe2" },
-	rBigToe: { name: "l_bigtoe1" },
-	rBigToe_2: { name: "l_bigtoe2" },
+	rSmallToe4: { name: "r_pinkytoe1" },
+	rSmallToe4_2: { name: "r_pinkytoe2" },
+	rSmallToe3: { name: "r_ringtoe1" },
+	rSmallToe3_2: { name: "r_ringtoe2" },
+	rSmallToe2: { name: "r_midtoe1" },
+	rSmallToe2_2: { name: "r_midtoe2" },
+	rSmallToe1: { name: "r_indextoe1" },
+	rSmallToe1_2: { name: "r_indextoe2" },
+	rBigToe: { name: "r_bigtoe1" },
+	rBigToe_2: { name: "r_bigtoe2" },
 	abdomenLower: { name: "spine1" },
 	abdomenUpper: { name: "spine2" },
 	chestLower: { name: "spine3" },
@@ -345,16 +350,16 @@ var g8BoneMap =
 	rFoot: { name: "r_foot", adj: [{ name: "rotation/z", apply: function (x) { return x + 3.0 } }] },
 	rMetatarsals: { name: "r_metatarsal" },
 	rToe: { name: "r_toes" },
-	rSmallToe4: { name: "l_pinkytoe1" },
-	rSmallToe4_2: { name: "l_pinkytoe2" },
-	rSmallToe3: { name: "l_ringtoe1" },
-	rSmallToe3_2: { name: "l_ringtoe2" },
-	rSmallToe2: { name: "l_midtoe1" },
-	rSmallToe2_2: { name: "l_midtoe2" },
-	rSmallToe1: { name: "l_indextoe1" },
-	rSmallToe1_2: { name: "l_indextoe2" },
-	rBigToe: { name: "l_bigtoe1" },
-	rBigToe_2: { name: "l_bigtoe2" },
+	rSmallToe4: { name: "r_pinkytoe1" },
+	rSmallToe4_2: { name: "r_pinkytoe2" },
+	rSmallToe3: { name: "r_ringtoe1" },
+	rSmallToe3_2: { name: "r_ringtoe2" },
+	rSmallToe2: { name: "r_midtoe1" },
+	rSmallToe2_2: { name: "r_midtoe2" },
+	rSmallToe1: { name: "r_indextoe1" },
+	rSmallToe1_2: { name: "r_indextoe2" },
+	rBigToe: { name: "r_bigtoe1" },
+	rBigToe_2: { name: "r_bigtoe2" },
 	abdomenLower: { name: "spine1" },
 	abdomenUpper: { name: "spine2" },
 	chestLower: { name: "spine3" },
