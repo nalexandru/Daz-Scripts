@@ -1,7 +1,7 @@
 // DAZ Studio version 4.9.2.0 filetype DAZ Script
 
 /*
- * G8 Pose Converter
+ * G3 Pose Converter
  * Copyright (c) 2022 Alexandru Naiman <alexandru.naiman@protonmail.ch>. All rights reserved.
  *
  * This script is based on G8F/M Pose Transfer to G9, copyright Richard Williams 2022. - https://www.renderosity.com/freestuff/items/93219/g8fm-pose-transfer-to-g9
@@ -24,17 +24,17 @@
 /*
  * Installation:
  *		1. Copy the contents of the archive to your content library
- *		2. Go to the script in the Content Library (Scripts > n_alexandru > G8 Pose Converter), right click and select Add Custom Action and click OK.
+ *		2. Go to the script in the Content Library (Scripts > n_alexandru > G3 Pose Converter), right click and select Add Custom Action and click OK.
  *
  * Usage:
  *		1. Select a Genesis 8 figure in your scene
  *		2. Select a pose preset from the Smart Content or Content Library pane
- *		3. Run the script from Scripts > G8 Pose Converter (the custom action added in step 2 of the installation)
+ *		3. Run the script from Scripts > G3 Pose Converter (the custom action added in step 2 of the installation)
  *			- If the source figure generation can't be detected automatically, a dialog will appear asking you to select it
  *
  * Options: (hold down the key when running the script)
  *		- Alt (Option on macOS) will force the figure select dialog to appear
- *		- Ctrl (Command on macOS) will zero the G8 pose first.
+ *		- Ctrl (Command on macOS) will zero the G3 pose first.
  *
  * Known Issues & Limitations:
  *		- Poses will require a little adjustment after conversion
@@ -50,7 +50,7 @@
  * parameters:
  * key - source figure bone name
  * target - target figure bone array:
- * 		name - G8 bone name
+ * 		name - G3 bone name
  * 		adj - adjustment array in the format { name: "<value name> (eg. rotation/x)", value: <float value that will be added to the pose value> }
  * 		whitelist / blacklist for value names
  * -------------------------------------
@@ -62,7 +62,7 @@ var g1BoneMap =
 	hip: { target: [{ name: "hip" }] },
 	pelvis: { target: [{ name: "pelvis" }] },
 	lThigh: { target: [
-		{ name: "lThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x - 6.0 } }] },
+		{ name: "lThighBend" },
 		{ name: "lThighTwist" }
 	] },
 	lShin: { target: [{ name: "lShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
@@ -77,7 +77,7 @@ var g1BoneMap =
 	lSmallToe1: { target: [{ name: "lSmallToe1" }] },
 	lBigToe: { target: [{ name: "lBigToe" }] },
 	rThigh: { target: [
-		{ name: "rThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x + 6.0 } }] },
+		{ name: "rThighBend" },
 		{ name: "rThighTwist" }
 	] },
 	rShin: { target: [{ name: "rShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
@@ -96,7 +96,7 @@ var g1BoneMap =
 	chest: { target: [{ name: "chestLower" }] },
 	lCollar: { target: [{ name: "lCollar", adj: [{ name: "rotation/z", apply: function (x) { return x - 2.0 } }] }] },
 	lShldr: { target: [
-		{ name: "lShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }] },
+		{ name: "lShldrBend" },
 		{ name: "lShldrTwist" },
 	] },
 	lForeArm: { target: [
@@ -121,7 +121,7 @@ var g1BoneMap =
 	lPinky3: { target: [{ name: "lPinky3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] }] },
 	rCollar: { target: [{ name: "rCollar", adj: [{ name: "rotation/z", apply: function (x) { return x + 2.0 } }] }] },
 	rShldr: { target: [
-		{ name: "rShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
+		{ name: "rShldrBend" },
 		{ name: "rShldrTwist" },
 	] },
 	rForeArm: { target: [
@@ -158,7 +158,7 @@ var g1BoneMap =
 		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
 		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
 	] }] },
-	root: { target: [{ name: "Genesis8" }] }
+	root: { target: [{ name: "Genesis3" }] }
 };
 
 var g2BoneMap =
@@ -166,7 +166,7 @@ var g2BoneMap =
 	hip: { target: [{ name: "hip" }] },
 	pelvis: { target: [{ name: "pelvis" }] },
 	lThigh: { target: [
-		{ name: "lThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x - 6.0 } }] },
+		{ name: "lThighBend" },
 		{ name: "lThighTwist" }
 	] },
 	lShin: { target: [{ name: "lShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
@@ -181,7 +181,7 @@ var g2BoneMap =
 	lSmallToe1: { target: [{ name: "lSmallToe1" }] },
 	lBigToe: { target: [{ name: "lBigToe" }] },
 	rThigh: { target: [
-		{ name: "rThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x + 6.0 } }] },
+		{ name: "rThighBend" },
 		{ name: "rThighTwist" }
 	] },
 	rShin: { target: [{ name: "rShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
@@ -200,7 +200,7 @@ var g2BoneMap =
 	chest: { target: [{ name: "chestLower" }] },
 	lCollar: { target: [{ name: "lCollar", adj: [{ name: "rotation/z", apply: function (x) { return x + 1.0 } }] }] },
 	lShldr: { target: [
-		{ name: "lShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }] },
+		{ name: "lShldrBend" },
 		{ name: "lShldrTwist" },
 	] },
 	lForeArm: { target: [
@@ -225,7 +225,7 @@ var g2BoneMap =
 	lPinky3: { target: [{ name: "lPinky3" }] },
 	rCollar: { target: [{ name: "rCollar", adj: [{ name: "rotation/z", apply: function (x) { return x - 1.0 } }] }] },
 	rShldr: { target: [
-		{ name: "rShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
+		{ name: "rShldrBend" },
 		{ name: "rShldrTwist" },
 	] },
 	rForeArm: { target: [
@@ -262,16 +262,16 @@ var g2BoneMap =
 		{ name: "rotation/y", apply: function (x) { return x * -1.0 } },
 		{ name: "rotation/z", apply: function (x) { return x * -1.0 } }
 	] }] },
-	root: { target: [{ name: "Genesis8" }] }
+	root: { target: [{ name: "Genesis3" }] }
 };
 
-var g3BoneMap =
+var g8BoneMap =
 {
 	hip: { target: [{ name: "hip" }] },
 	pelvis: { target: [{ name: "pelvis" }] },
-	lThighBend: { target: [{ name: "lThighBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 6.0 } }], blacklist: [ "rotation/y" ] }] },
+	lThighBend: { target: [{ name: "lThighBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 6.0 } }], blacklist: [ "rotation/y" ] }] },
 	lThighTwist: { target: [{ name: "lThighTwist" }] },
-	lShin: { target: [{ name: "lShin", adj: [{ name: "rotation/x", apply: function (x) { return x - 1.0 } }] }] },
+	lShin: { target: [{ name: "lShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
 	lFoot: { target: [{ name: "lFoot" }] },
 	lMetatarsals: { target: [{ name: "lMetatarsals" }] },
 	lToe: { target: [{ name: "lToe" }] },
@@ -285,9 +285,9 @@ var g3BoneMap =
 	lSmallToe1_2: { target: [{ name: "lSmallToe1_2" }] },
 	lBigToe: { target: [{ name: "lBigToe" }] },
 	lBigToe_2: { target: [{ name: "lBigToe_2" }] },
-	rThighBend: { target: [{ name: "rThighBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 6.0 } }], blacklist: [ "rotation/y" ] }] },
+	rThighBend: { target: [{ name: "rThighBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 6.0 } }], blacklist: [ "rotation/y" ] }] },
 	rThighTwist: { target: [{ name: "rThighTwist" }] },
-	rShin: { target: [{ name: "rShin", adj: [{ name: "rotation/x", apply: function (x) { return x - 1.0 } }] }] },
+	rShin: { target: [{ name: "rShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 1.0 } }] }] },
 	rFoot: { target: [{ name: "rFoot" }] },
 	rMetatarsals: { target: [{ name: "rMetatarsals" }] },
 	rToe: { target: [{ name: "rToe" }] },
@@ -305,8 +305,8 @@ var g3BoneMap =
 	abdomenUpper: { target: [{ name: "abdomenUpper" }] },
 	chestLower: { target: [{ name: "chestLower" }] },
 	chestUpper: { target: [{ name: "chestUpper" }] },
-	lCollar: { target: [{ name: "lCollar", adj: [{ name: "rotation/y", apply: function (x) { return x - 0.5 } }] }] },
-	lShldrBend: { target: [{ name: "lShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }], blacklist: [ "rotation/x" ] }] },
+	lCollar: { target: [{ name: "lCollar", adj: [{ name: "rotation/y", apply: function (x) { return x + 0.5 } }] }] },
+	lShldrBend: { target: [{ name: "lShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }], blacklist: [ "rotation/x" ] }] },
 	lShldrTwist: { target: [{ name: "lShldrTwist", whitelist: [ "rotation/x" ] }] },
 	lForearmBend: { target: [{ name: "lForearmBend", blacklist: [ "rotation/x" ] }] },
 	lForearmTwist: { target: [{ name: "lForearmTwist", whitelist: [ "rotation/x" ] }] },
@@ -330,8 +330,8 @@ var g3BoneMap =
 	lPinky1: { target: [{ name: "lPinky1" }] },
 	lPinky2: { target: [{ name: "lPinky2" }] },
 	lPinky3: { target: [{ name: "lPinky3" }] },
-	rCollar: { target: [{ name: "rCollar", adj: [{ name: "rotation/y", apply: function (x) { return x + 0.5 } }] }] },
-	rShldrBend: { target: [{ name: "rShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }], blacklist: [ "rotation/x" ] }] },
+	rCollar: { target: [{ name: "rCollar", adj: [{ name: "rotation/y", apply: function (x) { return x - 0.5 } }] }] },
+	rShldrBend: { target: [{ name: "rShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }], blacklist: [ "rotation/x" ] }] },
 	rShldrTwist: { target: [{ name: "rShldrTwist", whitelist: [ "rotation/x" ] }] },
 	rForearmBend: { target: [{ name: "rForearmBend", blacklist: [ "rotation/x" ] }] },
 	rForearmTwist: { target: [{ name: "rForearmTwist", whitelist: [ "rotation/x" ] }] },
@@ -362,7 +362,7 @@ var g3BoneMap =
 	head: { target: [{ name: "head" }] },
 	lEye: { target: [{ name: "lEye" }] },
 	rEye: { target: [{ name: "rEye" }] },
-	root: { target: [{ name: "Genesis8" }] }
+	root: { target: [{ name: "Genesis3" }] }
 };
 
 var g9BoneMap =
@@ -370,7 +370,7 @@ var g9BoneMap =
 	hip: { target: [{ name: "hip" }] },
 	pelvis: { target: [{ name: "pelvis" }] },
 	l_thigh: { target: [
-		{ name: "lThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x - 6.0 } }] },
+		{ name: "lThighBend" },
 		{ name: "lThighTwist" }
 	] },	
 	l_shin: { target: [{ name: "lShin" }] },
@@ -388,7 +388,7 @@ var g9BoneMap =
 	l_bigtoe1: { target: [{ name: "lBigToe" }] },
 	l_bigtoe2: { target: [{ name: "lBigToe_2" }] },
 	r_thigh: { target: [
-		{ name: "rThighBend", adj: [	{ name: "rotation/z", apply: function (x) { return x + 6.0 } }] },
+		{ name: "rThighBend" },
 		{ name: "rThighTwist" }
 	] },	
 	r_shin: { target: [{ name: "rShin" }] },
@@ -411,7 +411,7 @@ var g9BoneMap =
 	spine4: { target: [{ name: "chestUpper" }] },
 	l_shoulder: { target: [{ name: "lCollar" }] },
 	l_upperarm: { target: [
-		{ name: "lShldrBend" },
+		{ name: "lShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
 		{ name: "lShldrTwist" },
 	] },
 	l_forearm: { target: [
@@ -440,7 +440,7 @@ var g9BoneMap =
 	l_pinky3: { target: [{ name: "lPinky3" }] },
 	r_shoulder: { target: [{ name: "rCollar" }] },
 	r_upperarm: { target: [
-		{ name: "rShldrBend" },
+		{ name: "rShldrBend", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }] },
 		{ name: "rShldrTwist" },
 	] },
 	r_forearm: { target: [
@@ -474,7 +474,7 @@ var g9BoneMap =
 	head: { target: [{ name: "head" }] },
 	l_eye: { target: [{ name: "lEye" }] },
 	r_eye: { target: [{ name: "rEye" }] },
-	root: { target: [{ name: "Genesis8" }] }
+	root: { target: [{ name: "Genesis3" }] }
 };
 
 function getContentLibraryAsset(pane)
@@ -511,7 +511,7 @@ function showFigureSelect()
 	cbx.setFixedHeight(style.pixelMetric("DZ_ButtonHeight"));
 
 	cbx.addItem("Genesis 9");
-	cbx.addItem("Genesis 3");
+	cbx.addItem("Genesis 8");
 	cbx.addItem("Genesis 2");
 	cbx.addItem("Genesis");
 
@@ -528,17 +528,16 @@ function showFigureSelect()
 (function()
 {
 	var list = Scene.getSelectedSkeletonList();
-	if (list.length != 1 ||
-			(list[0].assetId != "Genesis8_1Female" && list[0].assetId != "Genesis8Female" && list[0].assetId != "Genesis8_1Male" && list[0].assetId != "Genesis8Male")) {
-		MessageBox.critical(qsTr("Select a Genesis 8 figure !"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+	if (list.length != 1 || (list[0].assetId != "Genesis3Female" && list[0].assetId != "Genesis3Male")) {
+		MessageBox.critical(qsTr("Select a Genesis 3 figure !"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 	
-	var g8 = list[0];
+	var g3 = list[0];
 
 	var pMgr = MainWindow.getPaneMgr();
 	if (!pMgr) {
-		MessageBox.critical(qsTr("No pane manager"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("No pane manager"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
@@ -551,13 +550,13 @@ function showFigureSelect()
 		asset = getSmartContentAsset(pane);
 
 	if (!asset) {
-		MessageBox.critical(qsTr("Select a pose preset in the Content Library or Smart Content pane !"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("Select a pose preset in the Content Library or Smart Content pane !"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
 	var file = new DzGZFile(asset.getAsLocalFile());
 	if (!file.open(DzGZFile.ReadOnly)) {
-		MessageBox.critical(qsTr("Failed to open file"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("Failed to open file"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
@@ -565,7 +564,7 @@ function showFigureSelect()
 	file.close();
 
 	if (!json) {
-		MessageBox.critical(qsTr("Failed to read file"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("Failed to read file"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
@@ -580,7 +579,7 @@ function showFigureSelect()
 	if (preset.asset_info.type == "preset_hierarchical_pose") {
 		hierarchical = true;
 	} else if (preset.asset_info.type != "preset_pose") {
-		MessageBox.critical(qsTr("The selected item is not a pose preset"), qsTr("G8 Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("The selected item is not a pose preset"), qsTr("G3 Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
@@ -594,8 +593,8 @@ function showFigureSelect()
 	if (!altDown && asset.compatibilities.length == 1) {
 		if (asset.compatibilities[0] == "/Genesis 9/Base") {
 			boneMap = g9BoneMap;
-		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
-			boneMap = g3BoneMap;
+		} else if (asset.compatibilities[0] == "/Genesis 8/Female" || asset.compatibilities[0] == "/Genesis 8/Male") {
+			boneMap = g8BoneMap;
 		} else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male") {
 			boneMap = g2BoneMap;
 		} else if (asset.compatibilities[0] == "/Genesis") {
@@ -606,7 +605,7 @@ function showFigureSelect()
 	if (boneMap == null) {
 		switch (showFigureSelect()) {
 		case 0: boneMap = g9BoneMap; break;
-		case 1: boneMap = g3BoneMap; break;
+		case 1: boneMap = g8BoneMap; break;
 		case 2: boneMap = g2BoneMap; break;
 		case 3: boneMap = g1BoneMap; break;
 		case -1: return;
@@ -616,7 +615,7 @@ function showFigureSelect()
 	setBusyCursor();
 	startProgress(qsTr("Converting pose"), boneMap.length, false, true);
 
-	// Zero G8 figure if requested
+	// Zero G3 figure if requested
 	if (ctrlDown)
 		MainWindow.getActionMgr().findAction("DzZeroFigurePoseAction").trigger();
 
@@ -638,7 +637,7 @@ function showFigureSelect()
 	if (maxTime > Scene.getAnimRange().end) {
 		if (MessageBox.question(
 				qsTr("The selected preset contains more frames than the timeline. Extend the timeline ?"),
-				qsTr("G8 Pose Converter"), qsTr("&Yes"), qsTr("&No")) == 0)
+				qsTr("G3 Pose Converter"), qsTr("&Yes"), qsTr("&No")) == 0)
 			Scene.setAnimRange(new DzTimeRange(0, maxTime));
 	}
 
@@ -670,11 +669,11 @@ function showFigureSelect()
 		for (var b = 0; b < maps.target.length; ++b) {
 			var m = maps.target[b];
 
-			var dstBone = g8.findBone(m.name);
+			var dstBone = g3.findBone(m.name);
 			if (!dstBone) {
-				if (m.name != "Genesis8")
+				if (m.name != "Genesis3")
 					continue;
-				dstBone = g8;
+				dstBone = g3;
 			}
 
 			var propName = uri.propertyPath[0] + "/" + uri.propertyPath[1];
@@ -737,6 +736,6 @@ function showFigureSelect()
 	}
 
 	finishProgress();
-	acceptUndo("G8 Pose Converter: " + asset.displayName);
+	acceptUndo("G3 Pose Converter: " + asset.displayName);
 	clearBusyCursor();
 })();
