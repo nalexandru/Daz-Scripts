@@ -45,6 +45,7 @@
 /*
  * History:
  * 2022-12-03: Corrected right toe mapping
+ * 2022-12-04: Improved source figure detection
  */
 
 // Missing bone mappings:
@@ -542,6 +543,10 @@ function showFigureSelect()
 			boneMap = g8BoneMap;
 		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
 			boneMap = g3BoneMap;
+		} else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male") {
+			boneMap = g2BoneMap;
+		} else if (asset.compatibilities[0] == "/Genesis") {
+			boneMap = g1BoneMap;
 		}
 	}
 
