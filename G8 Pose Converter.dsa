@@ -477,6 +477,214 @@ var g9BoneMap =
 	root: { target: [{ name: "Genesis8" }] }
 };
 
+var g1PropMap =
+[
+	{ name: "CTRLlFootRoll", target: "Left Foot Roll" },
+	{ name: "CTRLlFootTwist", target: "Left Foot Twist" },
+	{ name: "CTRLToesFanDownL", target: "Left Toes Fan Down" },
+	{ name: "CTRLToesSmallCurlL", target: "Left Toes Small Curl" },
+	{ name: "CTRLToesSpreadL", target: "Left Toes Spread" },
+	{ name: "CTRLlHandGrasp", target: "Left Hand Grasp" },
+	{ name: "CTRLlHandFist", target: "Left Hand Fist" },
+	{ name: "CTRLlHandSpread", target: "Left Hand Spread" },
+	{ name: "CTRLlFingersFist", target: "Left Fingers Fist" },
+	{ name: "CTRLlFingersGrasp", target: "Left Fingers Grasp" },
+	{ name: "CTRLlFingersInOut", target: "Left Fingers In-Out" },
+	{ name: "CTRLlThumbFist", target: "Left Thumb Fist" },
+	{ name: "CTRLlThumbGrasp", target: "Left Thumb Grasp" },
+	{ name: "CTRLlThumbInOut", target: "Left Thumb In-Out" },
+	{ name: "CTRLlIndexBend", target: "Left Index Finger Bend" },
+	{ name: "CTRLlMidBend", target: "Left Mid Finger Bend" },
+	{ name: "CTRLlPinkyBend", target: "Left Pinky Finger Bend" },
+	{ name: "CTRLlRingBend", target: "Left Ring Finger Bend" },
+	{ name: "CTRLlThumbBend", target: "Left Thumb Bend" },
+	{ name: "CTRLrFootRoll", target: "Right Foot Roll" },
+	{ name: "CTRLrFootTwist", target: "Right Foot Twist" },
+	{ name: "CTRLToesFanDownR", target: "Right Toes Fan Down" },
+	{ name: "CTRLToesSmallCurlR", target: "Right Toes Small Curl" },
+	{ name: "CTRLToesSpreadR", target: "Right Toes Spread" },
+	{ name: "CTRLrHandGrasp", target: "Right Hand Grasp" },
+	{ name: "CTRLrHandFist", target: "Right Hand Fist" },
+	{ name: "CTRLrHandSpread", target: "Right Hand Spread" },
+	{ name: "CTRLrFingersFist", target: "Right Fingers Fist" },
+	{ name: "CTRLrFingersGrasp", target: "Right Fingers Grasp" },
+	{ name: "CTRLrFingersInOut", target: "Right Fingers In-Out" },
+	{ name: "CTRLrThumbFist", target: "Right Thumb Fist" },
+	{ name: "CTRLrThumbGrasp", target: "Right Thumb Grasp" },
+	{ name: "CTRLrThumbInOut", target: "Right Thumb In-Out" },
+	{ name: "CTRLrIndexBend", target: "Right Index Finger Bend" },
+	{ name: "CTRLrMidBend", target: "Right Mid Finger Bend" },
+	{ name: "CTRLrPinkyBend", target: "Right Pinky Finger Bend" },
+	{ name: "CTRLrRingBend", target: "Right Ring Finger Bend" },
+	{ name: "CTRLrThumbBend", target: "Right Thumb Bend" },
+];
+
+var g2PropMap =
+[
+	{ name: "CTRLlFootRoll", target: "Left Foot Roll" },
+	{ name: "CTRLlFootTwist", target: "Left Foot Twist" },
+	{ name: "CTRLlToesFanDown", target: "Left Toes Fan Down" },
+	{ name: "CTRLlToesSmallCurl", target: "Left Toes Small Curl" },
+	{ name: "CTRLlToesSpread", target: "Left Toes Spread" },
+	{ name: "CTRLlBigToeBend", target: "Left Big Toe Bend" },
+	{ name: "CTRLlIndexToeBend", target: "Left Index Toe Bend" },
+	{ name: "CTRLlMidToeBend", target: "Left Mid Toe Bend" },
+	{ name: "CTRLlPinkyToeBend", target: "Left Pinky Toe Bend" },
+	{ name: "CTRLlRingToeBend", target: "Left Ring Toe Bend" },
+	{ name: "CTRLlHandGrasp", target: "Left Hand Grasp" },
+	{ name: "CTRLlHandFist", target: "Left Hand Fist" },
+	{ name: "CTRLlHandSpread", target: "Left Hand Spread" },
+	{ name: "CTRLlFingersFist", target: "Left Fingers Fist" },
+	{ name: "CTRLlFingersGrasp", target: "Left Fingers Grasp" },
+	{ name: "CTRLlFingersInOut", target: "Left Fingers In-Out" },
+	{ name: "CTRLlHandChop", target: "Left Hand Chop" },
+	{ name: "CTRLlThumbFist", target: "Left Thumb Fist" },
+	{ name: "CTRLlThumbGrasp", target: "Left Thumb Grasp" },
+	{ name: "CTRLlThumbInOut", target: "Left Thumb In-Out" },
+	{ name: "CTRLlIndexBend", target: "Left Index Finger Bend" },
+	{ name: "CTRLlMidBend", target: "Left Mid Finger Bend" },
+	{ name: "CTRLlPinkyBend", target: "Left Pinky Finger Bend" },
+	{ name: "CTRLlRingBend", target: "Left Ring Finger Bend" },
+	{ name: "CTRLlThumbBend", target: "Left Thumb Bend" },
+	{ name: "CTRLrFootRoll", target: "Right Foot Roll" },
+	{ name: "CTRLrFootTwist", target: "Right Foot Twist" },
+	{ name: "CTRLrToesFanDown", target: "Right Toes Fan Down" },
+	{ name: "CTRLrToesSmallCurl", target: "Right Toes Small Curl" },
+	{ name: "CTRLrToesSpread", target: "Right Toes Spread" },
+	{ name: "CTRLrBigToeBend", target: "Right Big Toe Bend" },
+	{ name: "CTRLrIndexToeBend", target: "Right Index Toe Bend" },
+	{ name: "CTRLrMidToeBend", target: "Right Mid Toe Bend" },
+	{ name: "CTRLrPinkyToeBend", target: "Right Pinky Toe Bend" },
+	{ name: "CTRLrRingToeBend", target: "Right Ring Toe Bend" },
+	{ name: "CTRLrHandGrasp", target: "Right Hand Grasp" },
+	{ name: "CTRLrHandFist", target: "Right Hand Fist" },
+	{ name: "CTRLrHandSpread", target: "Right Hand Spread" },
+	{ name: "CTRLrFingersFist", target: "Right Fingers Fist" },
+	{ name: "CTRLrFingersGrasp", target: "Right Fingers Grasp" },
+	{ name: "CTRLrFingersInOut", target: "Right Fingers In-Out" },
+	{ name: "CTRLrHandChop", target: "Right Hand Chop" },
+	{ name: "CTRLrThumbFist", target: "Right Thumb Fist" },
+	{ name: "CTRLrThumbGrasp", target: "Right Thumb Grasp" },
+	{ name: "CTRLrThumbInOut", target: "Right Thumb In-Out" },
+	{ name: "CTRLrIndexBend", target: "Right Index Finger Bend" },
+	{ name: "CTRLrMidBend", target: "Right Mid Finger Bend" },
+	{ name: "CTRLrPinkyBend", target: "Right Pinky Finger Bend" },
+	{ name: "CTRLrRingBend", target: "Right Ring Finger Bend" },
+	{ name: "CTRLrThumbBend", target: "Right Thumb Bend" },
+];
+
+var g3PropMap =
+[
+	{ name: "pCTRLlFootRoll", target: "Left Foot Roll" },
+	{ name: "pCTRLlFootTwist", target: "Left Foot Twist" },
+	{ name: "pCTRLlToesFanDown", target: "Left Toes Fan Down" },
+	{ name: "pCTRLlToesSmallCurl", target: "Left Toes Small Curl" },
+	{ name: "pCTRLlToesSpread", target: "Left Toes Spread" },
+	{ name: "pCTRLlBigToeBend", target: "Left Big Toe Bend" },
+	{ name: "pCTRLlIndexToeBend", target: "Left Index Toe Bend" },
+	{ name: "pCTRLlMidToeBend", target: "Left Mid Toe Bend" },
+	{ name: "pCTRLlPinkyToeBend", target: "Left Pinky Toe Bend" },
+	{ name: "pCTRLlRingToeBend", target: "Left Ring Toe Bend" },
+	{ name: "pCTRLlHandGrasp", target: "Left Hand Grasp" },
+	{ name: "pCTRLlHandFist", target: "Left Hand Fist" },
+	{ name: "pCTRLlHandSpread", target: "Left Hand Spread" },
+	{ name: "pCTRLlFingersFist", target: "Left Fingers Fist" },
+	{ name: "pCTRLlFingersGrasp", target: "Left Fingers Grasp" },
+	{ name: "pCTRLlFingersInOut", target: "Left Fingers In-Out" },
+	{ name: "pCTRLlHandChop", target: "Left Hand Chop" },
+	{ name: "pCTRLlThumbFist", target: "Left Thumb Fist" },
+	{ name: "pCTRLlThumbGrasp", target: "Left Thumb Grasp" },
+	{ name: "pCTRLlThumbInOut", target: "Left Thumb In-Out" },
+	{ name: "pCTRLlIndexBend", target: "Left Index Finger Bend" },
+	{ name: "pCTRLlMidBend", target: "Left Mid Finger Bend" },
+	{ name: "pCTRLlPinkyBend", target: "Left Pinky Finger Bend" },
+	{ name: "pCTRLlRingBend", target: "Left Ring Finger Bend" },
+	{ name: "pCTRLlThumbBend", target: "Left Thumb Bend" },
+	{ name: "pCTRLrFootRoll", target: "Right Foot Roll" },
+	{ name: "pCTRLrFootTwist", target: "Right Foot Twist" },
+	{ name: "pCTRLrToesFanDown", target: "Right Toes Fan Down" },
+	{ name: "pCTRLrToesSmallCurl", target: "Right Toes Small Curl" },
+	{ name: "pCTRLrToesSpread", target: "Right Toes Spread" },
+	{ name: "pCTRLrBigToeBend", target: "Right Big Toe Bend" },
+	{ name: "pCTRLrIndexToeBend", target: "Right Index Toe Bend" },
+	{ name: "pCTRLrMidToeBend", target: "Right Mid Toe Bend" },
+	{ name: "pCTRLrPinkyToeBend", target: "Right Pinky Toe Bend" },
+	{ name: "pCTRLrRingToeBend", target: "Right Ring Toe Bend" },
+	{ name: "pCTRLrHandGrasp", target: "Right Hand Grasp" },
+	{ name: "pCTRLrHandFist", target: "Right Hand Fist" },
+	{ name: "pCTRLrHandSpread", target: "Right Hand Spread" },
+	{ name: "pCTRLrFingersFist", target: "Right Fingers Fist" },
+	{ name: "pCTRLrFingersGrasp", target: "Right Fingers Grasp" },
+	{ name: "pCTRLrFingersInOut", target: "Right Fingers In-Out" },
+	{ name: "pCTRLrHandChop", target: "Right Hand Chop" },
+	{ name: "pCTRLrThumbFist", target: "Right Thumb Fist" },
+	{ name: "pCTRLrThumbGrasp", target: "Right Thumb Grasp" },
+	{ name: "pCTRLrThumbInOut", target: "Right Thumb In-Out" },
+	{ name: "pCTRLrIndexBend", target: "Right Index Finger Bend" },
+	{ name: "pCTRLrMidBend", target: "Right Mid Finger Bend" },
+	{ name: "pCTRLrPinkyBend", target: "Right Pinky Finger Bend" },
+	{ name: "pCTRLrRingBend", target: "Right Ring Finger Bend" },
+	{ name: "pCTRLrThumbBend", target: "Right Thumb Bend" },
+];
+
+var g9PropMap =
+[
+	{ name: "body_ctrl_lFootHeeledShoe", target: "Left Foot Heeled Shoe" },
+	{ name: "body_ctrl_lFootTipToes", target: "Left Foot Tip Toes" },
+	{ name: "body_ctrl_lFootRoll", target: "Left Foot Roll" },
+	{ name: "body_ctrl_lFootTwist", target: "Left Foot Twist" },
+	{ name: "body_ctrl_lToesFanDown", target: "Left Toes Fan Down" },
+	{ name: "body_ctrl_lToesSmallCurl", target: "Left Toes Small Curl" },
+	{ name: "body_ctrl_lToesSpread", target: "Left Toes Spread" },
+	{ name: "body_ctrl_lBigToeBend", target: "Left Big Toe Bend" },
+	{ name: "body_ctrl_lIndexToeBend", target: "Left Index Toe Bend" },
+	{ name: "body_ctrl_lMidToeBend", target: "Left Mid Toe Bend" },
+	{ name: "body_ctrl_lPinkyToeBend", target: "Left Pinky Toe Bend" },
+	{ name: "body_ctrl_lRingToeBend", target: "Left Ring Toe Bend" },
+	{ name: "body_ctrl_lHandGrasp", target: "Left Hand Grasp" },
+	{ name: "body_ctrl_lHandFist", target: "Left Hand Fist" },
+	{ name: "body_ctrl_lHandSpread", target: "Left Hand Spread" },
+	{ name: "body_ctrl_lFingersFist", target: "Left Fingers Fist" },
+	{ name: "body_ctrl_lFingersGrasp", target: "Left Fingers Grasp" },
+	{ name: "body_ctrl_lFingersInOut", target: "Left Fingers In-Out" },
+	{ name: "body_ctrl_lHandChop", target: "Left Hand Chop" },
+	{ name: "body_ctrl_lThumbFist", target: "Left Thumb Fist" },
+	{ name: "body_ctrl_lThumbGrasp", target: "Left Thumb Grasp" },
+	{ name: "body_ctrl_lThumbInOut", target: "Left Thumb In-Out" },
+	{ name: "body_ctrl_lIndexBend", target: "Left Index Finger Bend" },
+	{ name: "body_ctrl_lMidBend", target: "Left Mid Finger Bend" },
+	{ name: "body_ctrl_lPinkyBend", target: "Left Pinky Finger Bend" },
+	{ name: "body_ctrl_lRingBend", target: "Left Ring Finger Bend" },
+	{ name: "body_ctrl_lThumbBend", target: "Left Thumb Bend" },
+	{ name: "body_ctrl_rFootHeeledShoe", target: "Right Foot Heeled Shoe" },
+	{ name: "body_ctrl_rFootTipToes", target: "Right Foot Tip Toes" },
+	{ name: "body_ctrl_rFootRoll", target: "Right Foot Roll" },
+	{ name: "body_ctrl_rFootTwist", target: "Right Foot Twist" },
+	{ name: "body_ctrl_rToesFanDown", target: "Right Toes Fan Down" },
+	{ name: "body_ctrl_rToesSmallCurl", target: "Right Toes Small Curl" },
+	{ name: "body_ctrl_rToesSpread", target: "Right Toes Spread" },
+	{ name: "body_ctrl_rBigToeBend", target: "Right Big Toe Bend" },
+	{ name: "body_ctrl_rIndexToeBend", target: "Right Index Toe Bend" },
+	{ name: "body_ctrl_rMidToeBend", target: "Right Mid Toe Bend" },
+	{ name: "body_ctrl_rPinkyToeBend", target: "Right Pinky Toe Bend" },
+	{ name: "body_ctrl_rRingToeBend", target: "Right Ring Toe Bend" },
+	{ name: "body_ctrl_rHandGrasp", target: "Right Hand Grasp" },
+	{ name: "body_ctrl_rHandFist", target: "Right Hand Fist" },
+	{ name: "body_ctrl_rHandSpread", target: "Right Hand Spread" },
+	{ name: "body_ctrl_rFingersFist", target: "Right Fingers Fist" },
+	{ name: "body_ctrl_rFingersGrasp", target: "Right Fingers Grasp" },
+	{ name: "body_ctrl_rFingersInOut", target: "Right Fingers In-Out" },
+	{ name: "body_ctrl_rHandChop", target: "Right Hand Chop" },
+	{ name: "body_ctrl_rThumbFist", target: "Right Thumb Fist" },
+	{ name: "body_ctrl_rThumbGrasp", target: "Right Thumb Grasp" },
+	{ name: "body_ctrl_rThumbInOut", target: "Right Thumb In-Out" },
+	{ name: "body_ctrl_rIndexBend", target: "Right Index Finger Bend" },
+	{ name: "body_ctrl_rMidBend", target: "Right Mid Finger Bend" },
+	{ name: "body_ctrl_rPinkyBend", target: "Right Pinky Finger Bend" },
+	{ name: "body_ctrl_rRingBend", target: "Right Ring Finger Bend" },
+	{ name: "body_ctrl_rThumbBend", target: "Right Thumb Bend" },
+];
+
 function getContentLibraryAsset(pane)
 {
 	var assets = pane.getSelectedAssets();
@@ -585,6 +793,7 @@ function showFigureSelect()
 	}
 
 	var boneMap = null;
+	var propMap = null;
 
 	var mKeys = App.modifierKeyState();
 	var shiftDown = mKeys & 0x02000000;
@@ -594,21 +803,37 @@ function showFigureSelect()
 	if (!altDown && asset.compatibilities.length == 1) {
 		if (asset.compatibilities[0] == "/Genesis 9/Base") {
 			boneMap = g9BoneMap;
+			propMap = g9PropMap;
 		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
 			boneMap = g3BoneMap;
+			propMap = g3PropMap;
 		} else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male") {
 			boneMap = g2BoneMap;
+			propMap = g2PropMap;
 		} else if (asset.compatibilities[0] == "/Genesis") {
 			boneMap = g1BoneMap;
+			propMap = g1PropMap;
 		}
 	}
 
 	if (boneMap == null) {
 		switch (showFigureSelect()) {
-		case 0: boneMap = g9BoneMap; break;
-		case 1: boneMap = g3BoneMap; break;
-		case 2: boneMap = g2BoneMap; break;
-		case 3: boneMap = g1BoneMap; break;
+		case 0:
+			boneMap = g9BoneMap;
+			propMap = g9PropMap;
+		break;
+		case 1:
+			boneMap = g3BoneMap;
+			propMap = g3PropMap;
+		break;
+		case 2:
+			boneMap = g2BoneMap;
+			propMap = g2PropMap;
+		break;
+		case 3:
+			boneMap = g1BoneMap;
+			propMap = g1PropMap;
+		break;
 		case -1: return;
 		}
 	}
@@ -664,72 +889,100 @@ function showFigureSelect()
 			continue;
 
 		var maps = boneMap[boneName];
-		if (!maps)
-			continue;
-
-		for (var b = 0; b < maps.target.length; ++b) {
-			var m = maps.target[b];
-
-			var dstBone = g8.findBone(m.name);
-			if (!dstBone) {
-				if (m.name != "Genesis8")
+		if (chn.url.indexOf('#') != -1 || !maps) {
+			for (var j = 0; j < propMap.length; ++j) {
+				if (chn.url.indexOf(propMap[j].name) == -1)
 					continue;
-				dstBone = g8;
+
+				dstProp = g8.findPropertyByLabel(propMap[j].target);
+				if (!dstProp)
+					continue;
+
+				for (var l = 0; l < chn.keys.length; ++l) {
+					var time = lastFrame * chn.keys[l][0] * timeStep;
+					var value = chn.keys[l][1];
+
+					for (var k = 0; m.adj && k < m.adj.length; ++k) {
+						if (m.adj[k].name == propName)
+							value = m.adj[k].apply(value);
+					}
+
+					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
+						if (ignoreLimits == 0)
+							ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
+
+						if (ignoreLimits == 1)
+							dstProp.setIsClamped(false);
+					}
+
+					dstProp.setValue(time, value);
+				}
 			}
+		} else {
+			for (var b = 0; b < maps.target.length; ++b) {
+				var m = maps.target[b];
 
-			var propName = uri.propertyPath[0] + "/" + uri.propertyPath[1];
-			if (m.whitelist) {
-				var skip = true;
-
-				for (var j = 0; j < m.whitelist.length; ++j) {
-					if (m.whitelist[j] != propName)
+				var dstBone = g8.findBone(m.name);
+				if (!dstBone) {
+					if (m.name != "Genesis8")
 						continue;
+					dstBone = g8;
+				}
+
+				var propName = uri.propertyPath[0] + "/" + uri.propertyPath[1];
+				if (m.whitelist) {
+					var skip = true;
+
+					for (var j = 0; j < m.whitelist.length; ++j) {
+						if (m.whitelist[j] != propName)
+							continue;
 				
-					skip = false;
-					break;
-				}
+						skip = false;
+						break;
+					}
 
-				if (skip)
-					continue;
-			}
-
-			if (m.blacklist) {
-				var skip = false;
-
-				for (var j = 0; j < m.blacklist.length; ++j) {
-					if (m.blacklist[j] != propName)
+					if (skip)
 						continue;
-
-					skip = true;
-					break;
 				}
 
-				if (skip)
+				if (m.blacklist) {
+					var skip = false;
+
+					for (var j = 0; j < m.blacklist.length; ++j) {
+						if (m.blacklist[j] != propName)
+							continue;
+
+						skip = true;
+						break;
+					}
+
+					if (skip)
+						continue;
+				}
+
+				var dstProp = dstBone.findPropertyReference(new DzUri(dstBone.assetId + ":?" + propName));
+				if (!dstProp)
 					continue;
-			}
 
-			var dstProp = dstBone.findPropertyReference(new DzUri(dstBone.assetId + ":?" + propName));
-			if (!dstProp)
-				continue;
+				for (var j = 0; j < chn.keys.length; ++j) {
+					var time = lastFrame * chn.keys[j][0] * timeStep;
+					var value = chn.keys[j][1];
 
-			for (var j = 0; j < chn.keys.length; ++j) {
-				var time = lastFrame * chn.keys[j][0] * timeStep;
-				var value = chn.keys[j][1];
+					for (var k = 0; m.adj && k < m.adj.length; ++k) {
+						if (m.adj[k].name == propName)
+							value = m.adj[k].apply(value);
+					}
 
-				for (var k = 0; m.adj && k < m.adj.length; ++k) {
-					if (m.adj[k].name == propName)
-						value = m.adj[k].apply(value);
+					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
+						if (ignoreLimits == 0)
+							ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
+
+						if (ignoreLimits == 1)
+							dstProp.setIsClamped(false);
+					}
+
+					dstProp.setValue(time, value);
 				}
-
-				if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
-					if (ignoreLimits == 0)
-						ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
-
-					if (ignoreLimits == 1)
-						dstProp.setIsClamped(false);
-				}
-
-				dstProp.setValue(time, value);
 			}
 		}
 

@@ -47,7 +47,7 @@
  * 2022-12-03: Corrected right toe mapping
  * 2022-12-04:
  * 		 Improved source figure detection
- * 		 Convert pose control properties (hand, finger, foot (for high heeled shoes on G8), toe poses)
+ * 		 Convert pose control properties (hand, finger, foot (for heeled shoes on G8), toe poses)
  */
 
 // Missing bone mappings:
@@ -580,7 +580,7 @@ var g3PropMap =
 var g8PropMap =
 [
 	{ name: "pCTRLlFootHeeledShoe", target: "Left Foot Heeled Shoe" },
-	{ name: "pCTRLlFootTipToes", target: "Left Foot Heeled Shoe" },
+	{ name: "pCTRLlFootTipToes", target: "Left Foot Tip Toes" },
 	{ name: "pCTRLlFootRoll", target: "Left Foot Roll" },
 	{ name: "pCTRLlFootTwist", target: "Left Foot Twist" },
 	{ name: "pCTRLlToesFanDown", target: "Left Toes Fan Down" },
@@ -606,11 +606,8 @@ var g8PropMap =
 	{ name: "pCTRLlPinkyBend", target: "Left Pinky Finger Bend" },
 	{ name: "pCTRLlRingBend", target: "Left Ring Finger Bend" },
 	{ name: "pCTRLlThumbBend", target: "Left Thumb Bend" },
-	{ name: "pCTRLrHandGrasp", target: "Right Hand Grasp" },
-	{ name: "pCTRLrHandFist", target: "Right Hand Fist" },
-	{ name: "pCTRLrHandSpread", target: "Right Hand Spread" },
 	{ name: "pCTRLrFootHeeledShoe", target: "Right Foot Heeled Shoe" },
-	{ name: "pCTRLrFootTipToes", target: "Right Foot Heeled Shoe" },
+	{ name: "pCTRLrFootTipToes", target: "Right Foot Tip Toes" },
 	{ name: "pCTRLrFootRoll", target: "Right Foot Roll" },
 	{ name: "pCTRLrFootTwist", target: "Right Foot Twist" },
 	{ name: "pCTRLrToesFanDown", target: "Right Toes Fan Down" },
@@ -621,6 +618,9 @@ var g8PropMap =
 	{ name: "pCTRLrMidToeBend", target: "Right Mid Toe Bend" },
 	{ name: "pCTRLrPinkyToeBend", target: "Right Pinky Toe Bend" },
 	{ name: "pCTRLrRingToeBend", target: "Right Ring Toe Bend" },
+	{ name: "pCTRLrHandGrasp", target: "Right Hand Grasp" },
+	{ name: "pCTRLrHandFist", target: "Right Hand Fist" },
+	{ name: "pCTRLrHandSpread", target: "Right Hand Spread" },
 	{ name: "pCTRLrFingersFist", target: "Right Fingers Fist" },
 	{ name: "pCTRLrFingersGrasp", target: "Right Fingers Grasp" },
 	{ name: "pCTRLrFingersInOut", target: "Right Fingers In-Out" },
