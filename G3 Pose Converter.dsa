@@ -27,7 +27,7 @@
  *		2. Go to the script in the Content Library (Scripts > n_alexandru > G3 Pose Converter), right click and select Add Custom Action and click OK.
  *
  * Usage:
- *		1. Select a Genesis 8 figure in your scene
+ *		1. Select a Genesis 3 figure in your scene
  *		2. Select a pose preset from the Smart Content or Content Library pane
  *		3. Run the script from Scripts > G3 Pose Converter (the custom action added in step 2 of the installation)
  *			- If the source figure generation can't be detected automatically, a dialog will appear asking you to select it
