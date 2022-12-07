@@ -42,6 +42,12 @@
  *		- This scripts supports only .DUF files, because of this some Genesis 1 poses that come as .DSB files are not supported.
  */
 
+/*
+ * History:
+ * 2022-12-07:
+ * 		 Corrected animation timestep
+ */
+
 // Missing bone mappings:
 // Genesis 1/2 carpal, upper chest, upper neck
 
@@ -965,7 +971,7 @@ function showFigureSelect()
 					continue;
 
 				for (var j = 0; j < chn.keys.length; ++j) {
-					var time = lastFrame * chn.keys[j][0] * timeStep;
+					var time = chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
 					var value = chn.keys[j][1];
 
 					for (var k = 0; m.adj && k < m.adj.length; ++k) {
