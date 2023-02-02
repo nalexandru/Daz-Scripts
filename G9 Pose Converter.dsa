@@ -34,7 +34,7 @@
  *
  * Options: (hold down the key when running the script)
  *		- Alt (Option on macOS) will force the figure select dialog to appear
- *		- Ctrl (Command on macOS) will zero the G9 pose first.
+ *		- Ctrl (Command on macOS) will restore the G9 pose first
  *
  * Known Issues & Limitations:
  *		- Poses will require a little adjustment after conversion
@@ -46,10 +46,13 @@
  * History:
  * 2022-12-03: Corrected right toe mapping
  * 2022-12-04:
- * 		 Improved source figure detection
- * 		 Convert pose control properties (hand, finger, foot (for heeled shoes on G8), toe poses)
+ * 		Improved source figure detection
+ * 		Convert pose control properties (hand, finger, foot (for heeled shoes on G8), toe poses)
  * 2022-12-07:
- * 		 Corrected animation timestep
+ * 		Corrected animation timestep
+ * 2023-02-02:
+ *		Restore instead of zero figure pose when holding Ctrl/Command
+ *		Fixed hierarchical preset loading
  */
 
 // Missing bone mappings:
@@ -792,9 +795,9 @@ function showFigureSelect()
 	setBusyCursor();
 	startProgress(qsTr("Converting pose"), boneMap.length, false, true);
 
-	// Zero G9 figure if requested
+	// Restore G9 figure if requested
 	if (ctrlDown)
-		MainWindow.getActionMgr().findAction("DzZeroFigurePoseAction").trigger();
+		MainWindow.getActionMgr().findAction("DzRestoreFigurePoseAction").trigger();
 
 	// Convert Pose
 	beginUndo();
@@ -820,7 +823,7 @@ function showFigureSelect()
 
 	var ignoreLimits = 0;
 	var lastFrame = Scene.getAnimRange().end / timeStep;
-
+	
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
 		var uri = new DzUri(chn.url);
@@ -852,7 +855,12 @@ function showFigureSelect()
 				if (dstProp)
 					break;
 			}
-		} else {
+			
+			if (hierarchical && !dstProp)
+				m = boneMap[chn.url.split(':')[0]];
+		} 
+		
+		if (!dstProp && m) {
 			var dstBone = g9.findBone(m.name);
 			if (!dstBone) {
 				if (m.name != "Genesis9")
