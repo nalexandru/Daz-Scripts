@@ -53,6 +53,8 @@
  * 2023-02-02:
  *		Restore instead of zero figure pose when holding Ctrl/Command
  *		Fixed hierarchical preset loading
+ * 2023-02-20:
+ *		Fixed crash if the smart content pane plugin is disabled
  */
 
 // Missing bone mappings:
@@ -705,11 +707,11 @@ function showFigureSelect()
 	}
 
 	var asset = null, pane = pMgr.findPane("DzContentLibraryPane");
-	if (pane.visible)
+	if (pane && pane.visible)
 		asset = getContentLibraryAsset(pane);
 
 	pane = pMgr.findPane("DzSmartContentPane");
-	if (pane.visible)
+	if (pane && pane.visible)
 		asset = getSmartContentAsset(pane);
 
 	if (!asset) {

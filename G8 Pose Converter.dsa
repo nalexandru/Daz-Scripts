@@ -34,7 +34,7 @@
  *
  * Options: (hold down the key when running the script)
  *		- Alt (Option on macOS) will force the figure select dialog to appear
- *		- Ctrl (Command on macOS) will zero the G8 pose first.
+ *		- Ctrl (Command on macOS) will restore the G8 pose first.
  *
  * Known Issues & Limitations:
  *		- Poses will require a little adjustment after conversion
@@ -45,7 +45,12 @@
 /*
  * History:
  * 2022-12-07:
- * 		 Corrected animation timestep
+ * 		Corrected animation timestep
+ * 2023-02-02:
+ *		Restore instead of zero figure pose when holding Ctrl/Command
+ *		Fixed hierarchical preset loading
+ * 2023-02-20:
+ *		Fixed crash if the smart content pane plugin is disabled
  */
 
 // Missing bone mappings:
@@ -757,11 +762,11 @@ function showFigureSelect()
 	}
 
 	var asset = null, pane = pMgr.findPane("DzContentLibraryPane");
-	if (pane.visible)
+	if (pane && pane.visible)
 		asset = getContentLibraryAsset(pane);
 
 	pane = pMgr.findPane("DzSmartContentPane");
-	if (pane.visible)
+	if (pane && pane.visible)
 		asset = getSmartContentAsset(pane);
 
 	if (!asset) {
@@ -847,9 +852,9 @@ function showFigureSelect()
 	setBusyCursor();
 	startProgress(qsTr("Converting pose"), boneMap.length, false, true);
 
-	// Zero G8 figure if requested
+	// Restore G8 figure if requested
 	if (ctrlDown)
-		MainWindow.getActionMgr().findAction("DzZeroFigurePoseAction").trigger();
+		MainWindow.getActionMgr().findAction("DzRestoreFigurePoseAction").trigger();
 
 	// Convert Pose
 	beginUndo();
@@ -894,6 +899,7 @@ function showFigureSelect()
 		if (uri.propertyPath[0] == "scale")
 			continue;
 
+		var processed = false;
 		var maps = boneMap[boneName];
 		if (chn.url.indexOf('#') != -1 || !maps) {
 			for (var j = 0; j < propMap.length; ++j) {
@@ -922,9 +928,12 @@ function showFigureSelect()
 					}
 
 					dstProp.setValue(time, value);
+					processed = true;
 				}
 			}
-		} else {
+		}
+
+		if (hierarchical && !processed)
 			for (var b = 0; b < maps.target.length; ++b) {
 				var m = maps.target[b];
 
