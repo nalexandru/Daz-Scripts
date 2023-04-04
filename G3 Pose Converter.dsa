@@ -889,7 +889,7 @@ function showFigureSelect()
 		var boneName = null;
 		var selRoot = uri.nodePath[0] == "@selection";
 		if (uri.nodePath.length == 1 && selRoot)
-			boneName = "root"
+			boneName = "root";
 		else
 			boneName = selRoot ? uri.nodePath[1] : uri.nodePath[0];
 

@@ -894,7 +894,7 @@ function showFigureSelect()
 		var boneName = null;
 		var selRoot = uri.nodePath[0] == "@selection";
 		if (uri.nodePath.length == 1 && selRoot)
-			boneName = "root"
+			boneName = "root";
 		else
 			boneName = selRoot ? uri.nodePath[1] : uri.nodePath[0];
 
@@ -934,7 +934,7 @@ function showFigureSelect()
 				maps = boneMap[chn.url.split(':')[0]];
 		}
 
-		if (maps && !processed)
+		if (maps && !processed) {
 			for (var b = 0; b < maps.target.length; ++b) {
 				var m = maps.target[b];
 
