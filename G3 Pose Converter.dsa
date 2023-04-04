@@ -51,6 +51,8 @@
  *		Fixed hierarchical preset loading
  * 2023-02-20:
  *		Fixed crash if the smart content pane plugin is disabled
+ * 2023-04-04:
+ *		Fixed loading issues for presets with @selection in the URI
  */
 
 // Missing bone mappings:
@@ -885,10 +887,11 @@ function showFigureSelect()
 		// uri.propertyPath[1] -> x/y/z
 
 		var boneName = null;
-		if (uri.nodePath.length == 1 && uri.nodePath[0] == "@selection")
+		var selRoot = uri.nodePath[0] == "@selection";
+		if (uri.nodePath.length == 1 && selRoot)
 			boneName = "root"
 		else
-			boneName = hierarchical ? uri.nodePath[0] : uri.nodePath[1];
+			boneName = selRoot ? uri.nodePath[1] : uri.nodePath[0];
 
 		// skip the scale, it will disort the figure
 		if (uri.propertyPath[0] == "scale")
@@ -906,13 +909,8 @@ function showFigureSelect()
 					continue;
 
 				for (var l = 0; l < chn.keys.length; ++l) {
-					var time = lastFrame * chn.keys[l][0] * timeStep;
+					var time = chn.keys[l][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
 					var value = chn.keys[l][1];
-
-					for (var k = 0; m.adj && k < m.adj.length; ++k) {
-						if (m.adj[k].name == propName)
-							value = m.adj[k].apply(value);
-					}
 
 					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
 						if (ignoreLimits == 0)
@@ -926,9 +924,12 @@ function showFigureSelect()
 					processed = true;
 				}
 			}
+			
+			if (!processed)
+				maps = boneMap[chn.url.split(':')[0]];
 		}
 
-		if (hierarchical && !processed) {
+		if (maps && !processed) {
 			for (var b = 0; b < maps.target.length; ++b) {
 				var m = maps.target[b];
 

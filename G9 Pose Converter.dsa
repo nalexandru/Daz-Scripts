@@ -835,10 +835,11 @@ function showFigureSelect()
 		// uri.propertyPath[1] -> x/y/z
 
 		var boneName = null;
-		if (uri.nodePath.length == 1 && uri.nodePath[0] == "@selection")
+		var selRoot = hierarchical || uri.nodePath[0] == "@selection";
+		if (uri.nodePath.length == 1 && selRoot)
 			boneName = "root"
 		else
-			boneName = hierarchical ? uri.nodePath[0] : uri.nodePath[1];
+			boneName = selRoot ? uri.nodePath[1] : uri.nodePath[0];
 
 		// skip the scale, it will disort the figure
 		if (uri.propertyPath[0] == "scale")
@@ -858,7 +859,7 @@ function showFigureSelect()
 					break;
 			}
 			
-			if (hierarchical && !dstProp)
+			if (selRoot && !dstProp)
 				m = boneMap[chn.url.split(':')[0]];
 		} 
 		
