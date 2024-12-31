@@ -23,17 +23,17 @@
  /*
  * Installation:
  *		1. Copy the contents of the archive to your content library
- *		2. Go to the script in the Content Library (Scripts > n_alexandru > G2 Pose Converter), right click and select Add Custom Action and click OK.
+ *		2. Go to the script in the Content Library (Scripts > n_alexandru > Pose Converter), right click and select Add Custom Action and click OK.
  *
  * Usage:
- *		1. Select a Genesis 2 figure in your scene
+ *		1. Select a figure in your scene
  *		2. Select a pose preset from the Smart Content or Content Library pane
- *		3. Run the script from Scripts > G2 Pose Converter (the custom action added in step 2 of the installation)
+ *		3. Run the script from Scripts > Pose Converter (the custom action added in step 2 of the installation)
  *			- If the source figure generation can't be detected automatically, a dialog will appear asking you to select it
  *
  * Options: (hold down the key when running the script)
  *		- Alt (Option on macOS) will force the figure select dialog to appear
- *		- Ctrl (Command on macOS) will restore the G2 pose first.
+ *		- Ctrl (Command on macOS) will restore the figure pose first.
  *
  * Known Issues & Limitations:
  *		- Poses will require a little adjustment after conversion
@@ -61,8 +61,6 @@
 
 var boneMaps = [];
 var propMaps = [];
-
-var testString = "";
 
 function getContentLibraryAsset(pane)
 {
@@ -234,6 +232,8 @@ function loadMaps()
 	var ctrlDown = mKeys & 0x04000000;
 	var altDown = mKeys & 0x08000000;
 	
+	App.log(asset.compatibilities[0]);
+	
 	if (!altDown && asset.compatibilities.length == 1) {
 		if (asset.compatibilities[0] == "/Genesis 9/Base") {
 			boneMap = boneMaps[targetGeneration]["Genesis9"];
@@ -248,8 +248,8 @@ function loadMaps()
 			boneMap = boneMaps[targetGeneration]["Genesis2"];
 			propMap = propMaps[targetGeneration]["Genesis2"];
 		} else if (asset.compatibilities[0] == "/Genesis") {
-			boneMap = boneMaps[targetGeneration]["Genesis"];
-			propMap = propMaps[targetGeneration]["Genesis"];
+			boneMap = boneMaps[targetGeneration]["Genesis1"];
+			propMap = propMaps[targetGeneration]["Genesis1"];
 		}
 	}
 	
@@ -274,8 +274,8 @@ function loadMaps()
 			propMap = propMaps[targetGeneration]["Genesis2"];
 		break;
 		case 4:
-			boneMap = boneMaps[targetGeneration]["Genesis"];
-			propMap = propMaps[targetGeneration]["Genesis"];
+			boneMap = boneMaps[targetGeneration]["Genesis1"];
+			propMap = propMaps[targetGeneration]["Genesis1"];
 		break;
 		case -1: return;
 		}
