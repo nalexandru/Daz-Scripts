@@ -100,6 +100,7 @@ function showFigureSelect()
 	cbx.addItem("Genesis 9");
 	cbx.addItem("Genesis 8");
 	cbx.addItem("Genesis 3");
+	cbx.addItem("Genesis 2");
 	cbx.addItem("Genesis");
 
 	dlg.addWidget(cbx);
@@ -141,7 +142,9 @@ function loadMaps()
 	if (list.length != 1) {
 		MessageBox.critical(qsTr("Select a Genesis 2/3/8/9 figure !"), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
-	}	
+	}
+	
+	App.log(list[0].assetId);
 	
 	var targetGeneration;
 	if (list[0].assetId == "GenesisFemale" || list[0].assetId == "GenesisMale") {
@@ -152,13 +155,27 @@ function loadMaps()
 		targetGeneration = "Genesis8";
 	} else if (list[0].assetId == "Genesis9") {
 		targetGeneration = "Genesis9";
+	} else if (list[0].assetId == "Genesis") {
+		targetGeneration = "Genesis1";
+	} else if (list[0].assetId.indexOf("blMilWom_v4") != -1 || list[0].assetId.indexOf("blMilMan_m4") != -1) {
+		targetGeneration = "Generation4";
+	} else if (list[0].assetId.indexOf("blMilWom_v3") != -1 || list[0].assetId.indexOf("blMilMan_m3") != -1) {
+		targetGeneration = "Generation3";
+	} else if (list[0].assetId.indexOf("blMilWom_v2") != -1 || list[0].assetId.indexOf("blMilMan_m2") != -1) {
+		targetGeneration = "Generation2";
+	} else if (list[0].assetId.indexOf("blMilWom") != -1 || list[0].assetId.indexOf("blMilMan") != -1 || list[0].assetId.indexOf("blMilGirl") != -1) {
+		targetGeneration = "Generation1";
 	} else {
 		MessageBox.critical(qsTr("Select a Genesis 2/3/8/9 figure !"), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
 	}
-	
-App.log(list[0].assetId);
-App.log(targetGeneration);	
+
+	if (!boneMaps[targetGeneration] || !boneMaps[targetGeneration]) {
+		MessageBox.critical(qsTr("Mapping data for " + targetGeneration + " figures not found !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	App.log(targetGeneration);
 	
 	var targetFigure = list[0];
 
@@ -227,6 +244,9 @@ App.log(targetGeneration);
 		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
 			boneMap = boneMaps[targetGeneration]["Genesis3"];
 			propMap = propMaps[targetGeneration]["Genesis3"];
+		} else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male") {
+			boneMap = boneMaps[targetGeneration]["Genesis2"];
+			propMap = propMaps[targetGeneration]["Genesis2"];
 		} else if (asset.compatibilities[0] == "/Genesis") {
 			boneMap = boneMaps[targetGeneration]["Genesis"];
 			propMap = propMaps[targetGeneration]["Genesis"];
@@ -250,6 +270,10 @@ App.log(targetGeneration);
 			propMap = propMaps[targetGeneration]["Genesis3"];
 		break;
 		case 3:
+			boneMap = boneMaps[targetGeneration]["Genesis2"];
+			propMap = propMaps[targetGeneration]["Genesis2"];
+		break;
+		case 4:
 			boneMap = boneMaps[targetGeneration]["Genesis"];
 			propMap = propMaps[targetGeneration]["Genesis"];
 		break;
