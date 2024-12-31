@@ -55,6 +55,8 @@
  *		Fixed hierarchical preset loading
  * 2023-02-20:
  *		Fixed crash if the smart content pane plugin is disabled
+ * 2024-12-31:
+ *		Apply pose starting at the current position in the timeline
  */
 
 // Missing bone mappings:
@@ -116,7 +118,6 @@ var g1BoneMap =
 	lPinky1: { name: "l_pinky1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] },
 	lPinky2: { name: "l_pinky2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] },
 	lPinky3: { name: "l_pinky3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] },
-
 	rCollar: { name: "r_shoulder", adj: [{ name: "rotation/z", apply: function (x) { return x - 1.0 } }] },
 	rShldr: { name: "r_upperarm", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }] },
 	rForeArm: { name: "r_forearm", adj: [{ name: "rotation/y", apply: function (x) { return x + 10.0 } }, { name: "rotation/x", apply: function (x) { return x - 5.0 } }] },
@@ -805,13 +806,14 @@ function showFigureSelect()
 	beginUndo();
 
 	var maxTime = 0.0;
+	var startTime = Scene.getTime();
 	var timeStep = Scene.getTimeStep();
 
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
 
 		for (var j = 0; j < chn.keys.length; ++j) {
-			var time = 30 * chn.keys[j][0] * timeStep;
+			var time = startTime + (30 * chn.keys[j][0] * timeStep);
 			maxTime = time > maxTime ? time : maxTime;
 		}
 	}
@@ -910,7 +912,7 @@ function showFigureSelect()
 			continue;
 
 		for (var j = 0; j < chn.keys.length; ++j) {
-			var time = chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
+			var time = startTime + chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
 			var value = chn.keys[j][1];
 
 			for (var k = 0; adj && k < adj.length; ++k) {

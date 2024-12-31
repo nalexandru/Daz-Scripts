@@ -808,13 +808,14 @@ function showFigureSelect()
 	beginUndo();
 
 	var maxTime = 0.0;
+	var startTime = Scene.getTime();
 	var timeStep = Scene.getTimeStep();
 
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
 
 		for (var j = 0; j < chn.keys.length; ++j) {
-			var time = 30 * chn.keys[j][0] * timeStep;
+			var time = startTime + (30 * chn.keys[j][0] * timeStep);
 			maxTime = time > maxTime ? time : maxTime;
 		}
 	}
@@ -828,9 +829,8 @@ function showFigureSelect()
 
 	var ignoreLimits = 0;
 	var lastFrame = Scene.getAnimRange().end / timeStep;
-
+	
 	var additiveReset = [];
-
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
 		var uri = new DzUri(chn.url);
@@ -862,7 +862,7 @@ function showFigureSelect()
 					continue;
 
 				for (var l = 0; l < chn.keys.length; ++l) {
-					var time = chn.keys[l][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
+					var time = startTime + chn.keys[l][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
 					var value = chn.keys[l][1];
 
 					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
@@ -931,7 +931,7 @@ function showFigureSelect()
 					continue;
 
 				for (var j = 0; j < chn.keys.length; ++j) {
-					var time = chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
+					var time = startTime + chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
 					var value = chn.keys[j][1];
 
 					for (var k = 0; m.adj && k < m.adj.length; ++k) {
