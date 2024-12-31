@@ -1,0 +1,430 @@
+// DAZ Studio version 4.23.1.8 filetype DAZ Script
+
+/*
+ * Pose Converter
+ * Copyright (c) 2024 Alexandru Naiman <alexandru.naiman@protonmail.ch>. All rights reserved.
+ *
+ * This script is based on G8F/M Pose Transfer to G9, copyright Richard Williams 2022. - https://www.renderosity.com/freestuff/items/93219/g8fm-pose-transfer-to-g9
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+ * 		in the documentation and/or other materials provided with the distribution.
+ * 3. Redistributions in any from must be free of charge.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+ * BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
+ * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+ 
+ /*
+ * Installation:
+ *		1. Copy the contents of the archive to your content library
+ *		2. Go to the script in the Content Library (Scripts > n_alexandru > G2 Pose Converter), right click and select Add Custom Action and click OK.
+ *
+ * Usage:
+ *		1. Select a Genesis 2 figure in your scene
+ *		2. Select a pose preset from the Smart Content or Content Library pane
+ *		3. Run the script from Scripts > G2 Pose Converter (the custom action added in step 2 of the installation)
+ *			- If the source figure generation can't be detected automatically, a dialog will appear asking you to select it
+ *
+ * Options: (hold down the key when running the script)
+ *		- Alt (Option on macOS) will force the figure select dialog to appear
+ *		- Ctrl (Command on macOS) will restore the G2 pose first.
+ *
+ * Known Issues & Limitations:
+ *		- Poses will require a little adjustment after conversion
+ *		- The face rig with the exception of the eyes is not converted.
+ *		- This scripts supports only .DUF files, because of this some Genesis 1 poses that come as .DSB files are not supported.
+ */
+
+/*
+ * History:
+ * 2024-12-31:
+ * 		Initial release
+ */
+ 
+ /*
+ * Bone map definitions
+ * parameters:
+ * key - source figure bone name
+ * target - target figure bone array:
+ * 		name - target figure bone name
+ * 		adj - adjustment array in the format { name: "<value name> (eg. rotation/x)", value: <float value that will be added to the pose value> }
+ * 		whitelist / blacklist for value names
+ * -------------------------------------
+ * DSON file format specification: http://docs.daz3d.com/doku.php/public/dson_spec/start
+ */
+
+var boneMaps = [];
+var propMaps = [];
+
+var testString = "";
+
+function getContentLibraryAsset(pane)
+{
+	var assets = pane.getSelectedAssets();
+	return assets.length ? assets[0] : null;
+}
+
+function getSmartContentAsset(pane)
+{
+	var tab = pane.getCurrentTab();
+
+	var view = tab.getProductAssetsView();
+	var assets = view && view.visible ? tab.getProductAssetsView().getContentTab().getSelectedAssets() : tab.getSelectedAssets();
+
+	return assets && assets.length ? assets[0] : null;
+}
+
+function showFigureSelect()
+{
+	var style = App.getStyle();
+	var dlg = new DzBasicDialog();
+
+	dlg.caption = "Select figure";
+
+	var lbl = new DzLabel(dlg);
+	lbl.setFixedHeight(style.pixelMetric("DZ_ButtonHeight"));
+
+	lbl.text = "Select source figure:";
+
+	dlg.addWidget(lbl);
+
+	var cbx = new DzComboBox(dlg);
+	cbx.setFixedHeight(style.pixelMetric("DZ_ButtonHeight"));
+
+	cbx.addItem("Genesis 9");
+	cbx.addItem("Genesis 8");
+	cbx.addItem("Genesis 3");
+	cbx.addItem("Genesis");
+
+	dlg.addWidget(cbx);
+
+	dlg.setFixedSize(dlg.getWidget().minimumSizeHint.width, dlg.getWidget().minimumSizeHint.height);
+	
+	if (!dlg.exec())
+		return -1;
+
+	return cbx.currentItem;
+}
+
+function loadMaps()
+{
+	var dirPath = new DzFileInfo(getScriptFileName()).path() + "/maps/";
+	var mapDir = new DzDir(dirPath);
+	if (!mapDir)
+		return false;
+
+	var files = mapDir.entryList();
+	for (var i = 0; i < files.length; ++i) {
+		if (files[i][0] == '.')
+			continue;
+			
+		include(dirPath + files[i]);
+	}
+	
+	return true;
+}
+
+(function()
+{
+	if (!loadMaps()) {
+		MessageBox.critical(qsTr("Cannot load bone map files, please reinstall !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;	
+	}
+
+	var list = Scene.getSelectedSkeletonList();
+	if (list.length != 1) {
+		MessageBox.critical(qsTr("Select a Genesis 2/3/8/9 figure !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}	
+	
+	var targetGeneration;
+	if (list[0].assetId == "GenesisFemale" || list[0].assetId == "GenesisMale") {
+		targetGeneration = "Genesis2";
+	} else if (list[0].assetId == "Genesis3Female" || list[0].assetId == "Genesis3Male") {
+		targetGeneration = "Genesis3";
+	} else if (list[0].assetId == "Genesis8_1Female" || list[0].assetId == "Genesis8Female" || list[0].assetId == "Genesis8_1Male" || list[0].assetId == "Genesis8Male") {
+		targetGeneration = "Genesis8";
+	} else if (list[0].assetId == "Genesis9") {
+		targetGeneration = "Genesis9";
+	} else {
+		MessageBox.critical(qsTr("Select a Genesis 2/3/8/9 figure !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+	
+App.log(list[0].assetId);
+App.log(targetGeneration);	
+	
+	var targetFigure = list[0];
+
+	var pMgr = MainWindow.getPaneMgr();
+	if (!pMgr) {
+		MessageBox.critical(qsTr("No pane manager"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var asset = null, pane = pMgr.findPane("DzContentLibraryPane");
+	if (pane && pane.visible)
+		asset = getContentLibraryAsset(pane);
+
+	pane = pMgr.findPane("DzSmartContentPane");
+	if (pane && pane.visible)
+		asset = getSmartContentAsset(pane);
+
+	if (!asset) {
+		MessageBox.critical(qsTr("Select a pose preset in the Content Library or Smart Content pane !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var file = new DzGZFile(asset.getAsLocalFile());
+	if (!file.open(DzGZFile.ReadOnly)) {
+		MessageBox.critical(qsTr("Failed to open file"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var json = file.read();
+	file.close();
+
+	if (!json) {
+		MessageBox.critical(qsTr("Failed to read file"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var jsonStartChar = json.indexOf("{");
+	if (jsonStartChar != 0)
+		json = json.substring(jsonStartChar);
+
+	var preset = JSON.parse(json);
+
+	var hierarchical = false;
+	if (preset.asset_info.type == "preset_hierarchical_pose") {
+		hierarchical = true;
+	} else if (preset.asset_info.type != "preset_pose") {
+		MessageBox.critical(qsTr("The selected item is not a pose preset"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
+	}
+
+	var boneMap = null;
+	var propMap = null;
+
+	var mKeys = App.modifierKeyState();
+	var shiftDown = mKeys & 0x02000000;
+	var ctrlDown = mKeys & 0x04000000;
+	var altDown = mKeys & 0x08000000;
+	
+	if (!altDown && asset.compatibilities.length == 1) {
+		if (asset.compatibilities[0] == "/Genesis 9/Base") {
+			boneMap = boneMaps[targetGeneration]["Genesis9"];
+			propMap = propMaps[targetGeneration]["Genesis9"];
+		} else if (asset.compatibilities[0] == "/Genesis 8/Female" || asset.compatibilities[0] == "/Genesis 8/Male") {
+			boneMap = boneMaps[targetGeneration]["Genesis8"];
+			propMap = propMaps[targetGeneration]["Genesis8"];
+		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
+			boneMap = boneMaps[targetGeneration]["Genesis3"];
+			propMap = propMaps[targetGeneration]["Genesis3"];
+		} else if (asset.compatibilities[0] == "/Genesis") {
+			boneMap = boneMaps[targetGeneration]["Genesis"];
+			propMap = propMaps[targetGeneration]["Genesis"];
+		}
+	}
+	
+	App.log(targetGeneration);
+
+	if (boneMap == null) {
+		switch (showFigureSelect()) {
+		case 0:
+			boneMap = boneMaps[targetGeneration]["Genesis9"];
+			propMap = propMaps[targetGeneration]["Genesis9"];
+		break;
+		case 1:
+			boneMap = boneMaps[targetGeneration]["Genesis8"];
+			propMap = propMaps[targetGeneration]["Genesis8"];
+		break;
+		case 2:
+			boneMap = boneMaps[targetGeneration]["Genesis3"];
+			propMap = propMaps[targetGeneration]["Genesis3"];
+		break;
+		case 3:
+			boneMap = boneMaps[targetGeneration]["Genesis"];
+			propMap = propMaps[targetGeneration]["Genesis"];
+		break;
+		case -1: return;
+		}
+	}
+
+	setBusyCursor();
+	startProgress(qsTr("Converting pose"), boneMap.length, false, true);
+
+	// Restore target figure if requested
+	if (ctrlDown)
+		MainWindow.getActionMgr().findAction("DzRestoreFigurePoseAction").trigger();
+
+	// Convert Pose
+	beginUndo();
+
+	var maxTime = 0.0;
+	var startTime = Scene.getTime();
+	var timeStep = Scene.getTimeStep();
+
+	for (var i = 0; i < preset.scene.animations.length; ++i) {
+		var chn = preset.scene.animations[i];
+
+		for (var j = 0; j < chn.keys.length; ++j) {
+			var time = startTime + (30 * chn.keys[j][0] * timeStep);
+			maxTime = time > maxTime ? time : maxTime;
+		}
+	}
+
+	if (maxTime > Scene.getAnimRange().end) {
+		if (MessageBox.question(
+				qsTr("The selected preset contains more frames than the timeline. Extend the timeline ?"),
+				qsTr("Pose Converter"), qsTr("&Yes"), qsTr("&No")) == 0)
+			Scene.setAnimRange(new DzTimeRange(0, maxTime));
+	}
+
+	var ignoreLimits = 0;
+	var lastFrame = Scene.getAnimRange().end / timeStep;
+	
+	var additiveReset = [];
+	for (var i = 0; i < preset.scene.animations.length; ++i) {
+		var chn = preset.scene.animations[i];
+		var uri = new DzUri(chn.url);
+
+		// uri.nodePath -> bone name, first array element for hierarchical poses or second for non-hierarchical poses
+		// uri.propertyPath[0] -> property name (rotation/translation/scale)
+		// uri.propertyPath[1] -> x/y/z
+
+		var boneName = null;
+		var selRoot = uri.nodePath[0] == "@selection";
+		if (uri.nodePath.length == 1 && selRoot)
+			boneName = "root";
+		else
+			boneName = selRoot ? uri.nodePath[1] : uri.nodePath[0];
+
+		// skip the scale, it will disort the figure
+		if (uri.propertyPath[0] == "scale")
+			continue;
+
+		var processed = false;
+		var maps = boneMap[boneName];
+		if (chn.url.indexOf('#') != -1 || !maps) {
+			for (var j = 0; j < propMap.length; ++j) {
+				if (chn.url.indexOf(propMap[j].name) == -1)
+					continue;
+
+				dstProp = targetFigure.findPropertyByLabel(propMap[j].target);
+				if (!dstProp)
+					continue;
+
+				for (var l = 0; l < chn.keys.length; ++l) {
+					var time = startTime + chn.keys[l][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
+					var value = chn.keys[l][1];
+
+					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
+						if (ignoreLimits == 0)
+							ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
+
+						if (ignoreLimits == 1)
+							dstProp.setIsClamped(false);
+					}
+
+					dstProp.setValue(time, value);
+					processed = true;
+				}
+			}
+			
+			if (!processed)
+				maps = boneMap[chn.url.split(':')[0]];
+		}
+		
+		
+
+		if (maps && !processed) {
+			for (var b = 0; b < maps.target.length; ++b) {
+				var m = maps.target[b];
+
+				var dstBone = targetFigure.findBone(m.name);
+				if (!dstBone) {
+					if (m.name != "RootNode")
+						continue;
+					dstBone = targetFigure;
+				}
+
+				var propName = uri.propertyPath[0] + "/" + uri.propertyPath[1];
+				if (m.whitelist) {
+					var skip = true;
+
+					for (var j = 0; j < m.whitelist.length; ++j) {
+						if (m.whitelist[j] != propName)
+							continue;
+				
+						skip = false;
+						break;
+					}
+
+					if (skip)
+						continue;
+				}
+
+				if (m.blacklist) {
+					var skip = false;
+
+					for (var j = 0; j < m.blacklist.length; ++j) {
+						if (m.blacklist[j] != propName)
+							continue;
+
+						skip = true;
+						break;
+					}
+
+					if (skip)
+						continue;
+				}
+
+				var dstProp = dstBone.findPropertyReference(new DzUri(dstBone.assetId + ":?" + propName));
+				if (!dstProp)
+					continue;
+
+				for (var j = 0; j < chn.keys.length; ++j) {
+					var time = startTime + chn.keys[j][0] * 4800; // 4800 - see http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/object_index/time_dz
+					var value = chn.keys[j][1];
+
+					for (var k = 0; m.adj && k < m.adj.length; ++k) {
+						if (m.adj[k].name == propName)
+							value = m.adj[k].apply(value);
+					}
+
+					if (dstProp.isClamped() && (value > dstProp.getMax() || value < dstProp.getMin() )) {
+						if (ignoreLimits == 0)
+							ignoreLimits = MainWindow.askTurnOffLimits() ? 1 : 0;
+
+						if (ignoreLimits == 1)
+							dstProp.setIsClamped(false);
+					}
+
+					if (m.additive) {
+						var additiveName = m.name + "_" + propName;				
+						
+						var initial = additiveReset[additiveName] ? dstProp.getValue(time) : 0.0;
+						dstProp.setValue(time, initial + value);
+						
+						additiveReset[additiveName] = true;
+					} else {
+						dstProp.setValue(time, value);
+					}					
+				}
+			}
+		}
+
+		stepProgress(1);
+	}
+
+	finishProgress();
+	acceptUndo("Pose Converter: " + asset.displayName);
+	clearBusyCursor();
+})();
