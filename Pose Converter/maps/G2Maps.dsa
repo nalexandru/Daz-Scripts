@@ -23,6 +23,70 @@
 	boneMaps["Genesis2"] = [];
 	propMaps["Genesis2"] = [];
 	
+	boneMaps["Genesis2"]["Generation4"] =
+	{
+		hip: { target: [{ name: "hip" }] },
+		lThigh: { target: [{ name: "lThigh", adj: [
+			{ name: "rotation/x", apply: function (x) { return x - 1.0 } },
+			{ name: "rotation/z", apply: function (x) { return x - 3.0 } }
+		] }] },
+		lShin: { target: [{ name: "lShin" }] },
+		lFoot: { target: [{ name: "lFoot", adj: [{ name: "rotation/x", apply: function (x) { return x + 23.0 } }] }] },
+		lToe: { target: [{ name: "lToe" }] },
+		rThigh: { target: [{ name: "rThigh", adj: [
+			{ name: "rotation/x", apply: function (x) { return x - 1.0 } },
+			{ name: "rotation/z", apply: function (x) { return x + 3.0 } }
+		] }] },
+		rShin: { target: [{ name: "rShin" }] },
+		rFoot: { target: [{ name: "rFoot", adj: [{ name: "rotation/x", apply: function (x) { return x + 23.0 } }] }] },
+		rToe: { target: [{ name: "rToe" }] },
+		abdomen: { target: [{ name: "abdomen" }] },
+		chest: { target: [{ name: "chest" }] },
+		lCollar: { target: [{ name: "lCollar", adj: [{ name: "rotation/z", apply: function (x) { return x - 2.0 } }] }] },
+		lShldr: { target: [{ name: "lShldr" }] },
+		lForeArm: { target: [{ name: "lForeArm" }] },
+		lHand: { target: [{ name: "lHand", adj: [{ name: "rotation/y", apply: function (x) { return x - 16.0 } }] }] },
+		lThumb1: { target: [{ name: "lThumb1" }] },
+		lThumb2: { target: [{ name: "lThumb2", adj: [{ name: "rotation/y", apply: function (x) { return x + 9.70 } }] }] },
+		lThumb3: { target: [{ name: "lThumb3", adj: [{ name: "rotation/y", apply: function (x) { return x + 24.20 } }] }] },
+		lIndex1: { target: [{ name: "lIndex1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] }] },
+		lIndex2: { target: [{ name: "lIndex2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] }] },
+		lIndex3: { target: [{ name: "lIndex3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] }] },
+		lMid1: { target: [{ name: "lMid1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] }] },
+		lMid2: { target: [{ name: "lMid2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] }] },
+		lMid3: { target: [{ name: "lMid3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] }] },
+		lRing1: { target: [{ name: "lRing1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] }] },
+		lRing2: { target: [{ name: "lRing2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] }] },
+		lRing3: { target: [{ name: "lRing3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] }] },
+		lPinky1: { target: [{ name: "lPinky1", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] }] },
+		lPinky2: { target: [{ name: "lPinky2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.15 } }] }] },
+		lPinky3: { target: [{ name: "lPinky3", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.30 } }] }] },
+		rCollar: { target: [{ name: "rCollar", adj: [{ name: "rotation/z", apply: function (x) { return x + 2.0 } }] }] },
+		rShldr: { target: [{ name: "rShldr" }] },
+		rForeArm: { target: [{ name: "rForeArm" }] },
+		rHand: { target: [{ name: "rHand", adj: [{ name: "rotation/y", apply: function (x) { return x + 16.0 } }] }] },
+		rThumb1: { target: [{ name: "rThumb1" }] },
+		rThumb2: { target: [{ name: "rThumb2", adj: [{ name: "rotation/y", apply: function (x) { return x - 9.70 } }] }] },
+		rThumb3: { target: [{ name: "rThumb3", adj: [{ name: "rotation/y", apply: function (x) { return x - 24.20 } }] }] },
+		rIndex1: { target: [{ name: "rIndex1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] }] },
+		rIndex2: { target: [{ name: "rIndex2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] }] },
+		rIndex3: { target: [{ name: "rIndex3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] }] },
+		rMid1: { target: [{ name: "rMid1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] }] },
+		rMid2: { target: [{ name: "rMid2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] }] },
+		rMid3: { target: [{ name: "rMid3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] }] },
+		rRing1: { target: [{ name: "rRing1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] }] },
+		rRing2: { target: [{ name: "rRing2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] }] },
+		rRing3: { target: [{ name: "rRing3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] }] },
+		rPinky1: { target: [{ name: "rPinky1", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] }] },
+		rPinky2: { target: [{ name: "rPinky2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.15 } }] }] },
+		rPinky3: { target: [{ name: "rPinky3", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.30 } }] }] },
+		neck: { target: [{ name: "neck" }] },
+		head: { target: [{ name: "head" }] },
+		lEye: { target: [{ name: "lEye", }] },
+		rEye: { target: [{ name: "rEye", }] },
+		root: { target: [{ name: "RootNode" }] }
+	};
+	
 	boneMaps["Genesis2"]["Genesis1"] =
 	{
 		hip: { target: [{ name: "hip" }] },
@@ -100,7 +164,7 @@
 		hip: { target: [{ name: "hip" }] },
 		pelvis: { target: [{ name: "pelvis" }] },
 		lThighBend: { target: [{ name: "lThigh", blacklist: [ "rotation/y" ] }] },
-		lThighTwist: { target: [{ name: "lThigh" }] },
+		lThighTwist: { target: [{ name: "lThigh", whitelist: [ "rotation/y" ] }] },
 		lShin: { target: [{ name: "lShin" }] },
 		lFoot: { target: [{ name: "lFoot" }] },
 		lMetatarsals: { target: [{ name: "lMetatarsals" }] },
@@ -116,7 +180,7 @@
 		lBigToe: { target: [{ name: "lBigToe" }] },
 		lBigToe_2: { target: [{ name: "lBigToe_2" }] },
 		rThighBend: { target: [{ name: "rThigh", blacklist: [ "rotation/y" ] }] },
-		rThighTwist: { target: [{ name: "rThigh" }] },
+		rThighTwist: { target: [{ name: "rThigh", whitelist: [ "rotation/y" ] }] },
 		rShin: { target: [{ name: "rShin" }] },
 		rFoot: { target: [{ name: "rFoot" }] },
 		rMetatarsals: { target: [{ name: "rMetatarsals" }] },
@@ -137,9 +201,9 @@
 		chestUpper: { target: [{ name: "chest", additive: true }] },
 		lCollar: { target: [{ name: "lCollar" }] },
 		lShldrBend: { target: [{ name: "lShldr", blacklist: [ "rotation/x" ] }] },
-		lShldrTwist: { target: [{ name: "lShldr" }] },
+		lShldrTwist: { target: [{ name: "lShldr", whitelist: [ "rotation/x" ] }] },
 		lForearmBend: { target: [{ name: "lForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x + 13.0 } }], blacklist: [ "rotation/x" ] }] },
-		lForearmTwist: { target: [{ name: "lForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x + 25.0 } }] }] },
+		lForearmTwist: { target: [{ name: "lForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x + 25.0 } }], whitelist: [ "rotation/x" ] }] },
 		lHand: { target: [{ name: "lHand", adj: [{ name: "rotation/y", apply: function (x) { return x + 11.0 } }] }] },
 		lThumb1: { target: [{ name: "lThumb1" }] },
 		lThumb2: { target: [{ name: "lThumb2" }] },
@@ -162,9 +226,9 @@
 		lPinky3: { target: [{ name: "lPinky3" }] },
 		rCollar: { target: [{ name: "rCollar" }] },
 		rShldrBend: { target: [{ name: "rShldr", blacklist: [ "rotation/x" ] }] },
-		rShldrTwist: { target: [{ name: "rShldr" }] },
+		rShldrTwist: { target: [{ name: "rShldr", whitelist: [ "rotation/x" ] }] },
 		rForearmBend: { target: [{ name: "rForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x - 13.0 } }], blacklist: [ "rotation/x" ] }] },
-		rForearmTwist: { target: [{ name: "rForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x - 25.0 } }] }] },
+		rForearmTwist: { target: [{ name: "rForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x - 25.0 } }], whitelist: [ "rotation/x" ] }] },
 		rHand: { target: [{ name: "rHand", adj: [{ name: "rotation/y", apply: function (x) { return x - 11.0 } }] }] },
 		rThumb1: { target: [{ name: "rThumb1" }] },
 		rThumb2: { target: [{ name: "rThumb2" }] },
@@ -208,7 +272,7 @@
 		hip: { target: [{ name: "hip" }] },
 		pelvis: { target: [{ name: "pelvis" }] },
 		lThighBend: { target: [{ name: "lThigh", adj: [{ name: "rotation/z", apply: function (x) { return x + 6.0 } }], blacklist: [ "rotation/y" ] }] },
-		lThighTwist: { target: [{ name: "lThigh" }] },
+		lThighTwist: { target: [{ name: "lThigh", whitelist: [ "rotation/y" ] }] },
 		lShin: { target: [{ name: "lShin" }] },
 		lFoot: { target: [{ name: "lFoot" }] },
 		lMetatarsals: { target: [{ name: "lMetatarsals" }] },
@@ -224,7 +288,7 @@
 		lBigToe: { target: [{ name: "lBigToe" }] },
 		lBigToe_2: { target: [{ name: "lBigToe_2" }] },
 		rThighBend: { target: [{ name: "rThigh", adj: [{ name: "rotation/z", apply: function (x) { return x - 6.0 } }], blacklist: [ "rotation/y" ] }] },
-		rThighTwist: { target: [{ name: "rThigh" }] },
+		rThighTwist: { target: [{ name: "rThigh", whitelist: [ "rotation/y" ] }] },
 		rShin: { target: [{ name: "rShin" }] },
 		rFoot: { target: [{ name: "rFoot" }] },
 		rMetatarsals: { target: [{ name: "rMetatarsals" }] },
@@ -245,9 +309,9 @@
 		chestUpper: { target: [{ name: "chest", additive: true }] },
 		lCollar: { target: [{ name: "lCollar" }] },
 		lShldrBend: { target: [{ name: "lShldr", adj: [{ name: "rotation/z", apply: function (x) { return x - 45.0 } }], blacklist: [ "rotation/x" ] }] },
-		lShldrTwist: { target: [{ name: "lShldr" }] },
+		lShldrTwist: { target: [{ name: "lShldr", whitelist: [ "rotation/x" ] }] },
 		lForearmBend: { target: [{ name: "lForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x + 13.0 } }], blacklist: [ "rotation/x" ] }] },
-		lForearmTwist: { target: [{ name: "lForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x + 25.0 } }] }] },
+		lForearmTwist: { target: [{ name: "lForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x + 25.0 } }], whitelist: [ "rotation/x" ] }] },
 		lHand: { target: [{ name: "lHand", adj: [{ name: "rotation/y", apply: function (x) { return x + 11.0 } }] }] },
 		lThumb1: { target: [{ name: "lThumb1" }] },
 		lThumb2: { target: [{ name: "lThumb2" }] },
@@ -270,9 +334,9 @@
 		lPinky3: { target: [{ name: "lPinky3" }] },
 		rCollar: { target: [{ name: "rCollar" }] },
 		rShldrBend: { target: [{ name: "rShldr", adj: [{ name: "rotation/z", apply: function (x) { return x + 45.0 } }], blacklist: [ "rotation/x" ] }] },
-		rShldrTwist: { target: [{ name: "rShldr" }] },
+		rShldrTwist: { target: [{ name: "rShldr", whitelist: [ "rotation/x" ] }] },
 		rForearmBend: { target: [{ name: "rForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x - 13.0 } }], blacklist: [ "rotation/x" ] }] },
-		rForearmTwist: { target: [{ name: "rForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x - 25.0 } }] }] },
+		rForearmTwist: { target: [{ name: "rForeArm", adj: [{ name: "rotation/x", apply: function (x) { return x - 25.0 } }], whitelist: [ "rotation/x" ] }] },
 		rHand: { target: [{ name: "rHand", adj: [{ name: "rotation/y", apply: function (x) { return x - 11.0 } }] }] },
 		rThumb1: { target: [{ name: "rThumb1" }] },
 		rThumb2: { target: [{ name: "rThumb2" }] },
@@ -404,6 +468,11 @@
 		r_eye: { target: [{ name: "rEye" }] },
 		root: { target: [{ name: "RootNode" }] }
 	};
+	
+	propMaps["Genesis2"]["Generation1"] = [];
+	propMaps["Genesis2"]["Generation2"] = [];
+	propMaps["Genesis2"]["Generation3"] = [];
+	propMaps["Genesis2"]["Generation4"] = [];
 
 	propMaps["Genesis2"]["Genesis1"] =
 	[
