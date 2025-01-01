@@ -100,6 +100,8 @@ function showFigureSelect()
 	cbx.addItem("Genesis 3");
 	cbx.addItem("Genesis 2");
 	cbx.addItem("Genesis");
+	cbx.addItem("Generation 4");
+	cbx.addItem("Generation 3");
 
 	dlg.addWidget(cbx);
 
@@ -220,7 +222,7 @@ function loadMaps()
 	} catch (error) {
 		App.log("Failed to parse file at " + asset.getAsLocalFile() + ": " + error);
 		
-		MessageBox.critical(qsTr("Failed to read file!\nOnly .duf pose presets are supported, if the pose is a .dsb or .dsa file apply it to the source figure first then save it as a Pose Preset."), qsTr("Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("Failed to read file!\nOnly .duf pose presets are supported, if the pose is a .dsb, .dsa or .pz2 file apply it to the source figure first then save it as a Pose Preset."), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
@@ -239,58 +241,48 @@ function loadMaps()
 	var shiftDown = mKeys & 0x02000000;
 	var ctrlDown = mKeys & 0x04000000;
 	var altDown = mKeys & 0x08000000;
-	
-	App.log(asset.compatibilities[0]);
-	
+
+	var sourceGeneration = null;
+
 	if (!altDown && asset.compatibilities.length == 1) {
-		if (asset.compatibilities[0] == "/Genesis 9/Base") {
-			boneMap = boneMaps[targetGeneration]["Genesis9"];
-			propMap = propMaps[targetGeneration]["Genesis9"];
-		} else if (asset.compatibilities[0] == "/Genesis 8/Female" || asset.compatibilities[0] == "/Genesis 8/Male") {
-			boneMap = boneMaps[targetGeneration]["Genesis8"];
-			propMap = propMaps[targetGeneration]["Genesis8"];
-		} else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male") {
-			boneMap = boneMaps[targetGeneration]["Genesis3"];
-			propMap = propMaps[targetGeneration]["Genesis3"];
-		} else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male") {
-			boneMap = boneMaps[targetGeneration]["Genesis2"];
-			propMap = propMaps[targetGeneration]["Genesis2"];
-		} else if (asset.compatibilities[0] == "/Genesis") {
-			boneMap = boneMaps[targetGeneration]["Genesis1"];
-			propMap = propMaps[targetGeneration]["Genesis1"];
-		}
+		if (asset.compatibilities[0] == "/Genesis 9/Base")
+			sourceGeneration = "Genesis9";
+		else if (asset.compatibilities[0] == "/Genesis 8/Female" || asset.compatibilities[0] == "/Genesis 8/Male")
+			sourceGeneration = "Genesis8";
+		else if (asset.compatibilities[0] == "/Genesis 3/Female" || asset.compatibilities[0] == "/Genesis 3/Male")
+			sourceGeneration = "Genesis3";
+		else if (asset.compatibilities[0] == "/Genesis 2/Female" || asset.compatibilities[0] == "/Genesis 2/Male")
+			sourceGeneration = "Genesis2";
+		else if (asset.compatibilities[0] == "/Genesis")
+			sourceGeneration = "Genesis1";
 	}
 	
 	App.log(targetGeneration);
 
 	if (boneMap == null) {
 		switch (showFigureSelect()) {
-		case 0:
-			boneMap = boneMaps[targetGeneration]["Genesis9"];
-			propMap = propMaps[targetGeneration]["Genesis9"];
-		break;
-		case 1:
-			boneMap = boneMaps[targetGeneration]["Genesis8"];
-			propMap = propMaps[targetGeneration]["Genesis8"];
-		break;
-		case 2:
-			boneMap = boneMaps[targetGeneration]["Genesis3"];
-			propMap = propMaps[targetGeneration]["Genesis3"];
-		break;
-		case 3:
-			boneMap = boneMaps[targetGeneration]["Genesis2"];
-			propMap = propMaps[targetGeneration]["Genesis2"];
-		break;
-		case 4:
-			boneMap = boneMaps[targetGeneration]["Genesis1"];
-			propMap = propMaps[targetGeneration]["Genesis1"];
-		break;
+		case 0: sourceGeneration = "Genesis9"; break;
+		case 1: sourceGeneration = "Genesis8"; break;
+		case 2: sourceGeneration = "Genesis3"; break;
+		case 3: sourceGeneration = "Genesis2"; break;
+		case 4: sourceGeneration = "Genesis1"; break;
+		case 5: sourceGeneration = "Generation4"; break;
+		case 6: sourceGeneration = "Generation3"; break;
 		case -1: return;
 		}
 	}
 	
+	boneMap = boneMaps[targetGeneration][sourceGeneration];
+	propMap = propMaps[targetGeneration][sourceGeneration];	
+	
+	if (targetGeneration == sourceGeneration) {
+		var cMgr = App.getContentMgr();
+		cMgr.openFile(asset.getAsLocalFile(), true);
+		return;
+	}
+	
 	if (!boneMap || !propMap) {
-		MessageBox.critical(qsTr("Mapping form " + targetGeneration + " to the source figure not found !"), qsTr("Pose Converter"), qsTr("&OK"));
+		MessageBox.critical(qsTr("Mapping form " + sourceGeneration + " to " + targetGeneration + " not found !"), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
 	}
 
