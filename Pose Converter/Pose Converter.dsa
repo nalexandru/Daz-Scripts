@@ -168,7 +168,7 @@ function loadMaps()
 		return;
 	}
 
-	if (!boneMaps[targetGeneration] || !boneMaps[targetGeneration]) {
+	if (!boneMaps[targetGeneration] || !propMaps[targetGeneration]) {
 		MessageBox.critical(qsTr("Mapping data for " + targetGeneration + " figures not found !"), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
 	}
@@ -202,19 +202,27 @@ function loadMaps()
 		return;
 	}
 
-	var json = file.read();
-	file.close();
+	var preset = null;
+	try {
+		var json = file.read();
+		file.close();
+	
+		if (!json) {
+			MessageBox.critical(qsTr("Failed to read file"), qsTr("Pose Converter"), qsTr("&OK"));
+			return;
+		}
 
-	if (!json) {
-		MessageBox.critical(qsTr("Failed to read file"), qsTr("Pose Converter"), qsTr("&OK"));
+		var jsonStartChar = json.indexOf("{");
+		if (jsonStartChar != 0)
+			json = json.substring(jsonStartChar);
+
+		preset = JSON.parse(json);
+	} catch (error) {
+		App.log("Failed to parse file at " + asset.getAsLocalFile() + ": " + error);
+		
+		MessageBox.critical(qsTr("Failed to read file!\nOnly .duf pose presets are supported, if the pose is a .dsb or .dsa file apply it to the source figure first then save it as a Pose Preset."), qsTr("Pose Converter"), qsTr("&OK"));
 		return;
 	}
-
-	var jsonStartChar = json.indexOf("{");
-	if (jsonStartChar != 0)
-		json = json.substring(jsonStartChar);
-
-	var preset = JSON.parse(json);
 
 	var hierarchical = false;
 	if (preset.asset_info.type == "preset_hierarchical_pose") {
@@ -279,6 +287,11 @@ function loadMaps()
 		break;
 		case -1: return;
 		}
+	}
+	
+	if (!boneMap || !propMap) {
+		MessageBox.critical(qsTr("Mapping form " + targetGeneration + " to the source figure not found !"), qsTr("Pose Converter"), qsTr("&OK"));
+		return;
 	}
 
 	setBusyCursor();
