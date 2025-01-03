@@ -55,6 +55,8 @@
  *		Fixed loading issues for presets with @selection in the URI
  * 2024-12-31:
  *		Apply pose starting at the current position in the timeline
+ * 2025-01-03:
+ *		Fixed loading presets with invalid channel data (no URL)
  */
 
 // Missing bone mappings:
@@ -888,6 +890,9 @@ function showFigureSelect()
 
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
+		if (!chn.url)
+			continue; // some presets have entries containing an empty key with no url, skip those
+		
 		var uri = new DzUri(chn.url);
 
 		// uri.nodePath -> bone name, first array element for hierarchical poses or second for non-hierarchical poses

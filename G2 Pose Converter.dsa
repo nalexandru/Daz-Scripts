@@ -48,6 +48,8 @@
  * 		Initial release
  * 2025-01-01:
  * 		Fixed G3 & G8 presets
+ * 2025-01-03:
+ *		Fixed loading presets with invalid channel data (no URL)
  */
 
 /*
@@ -835,6 +837,9 @@ function showFigureSelect()
 	var additiveReset = [];
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
+		if (!chn.url)
+			continue; // some presets have entries containing an empty key with no url, skip those
+		
 		var uri = new DzUri(chn.url);
 
 		// uri.nodePath -> bone name, first array element for hierarchical poses or second for non-hierarchical poses
