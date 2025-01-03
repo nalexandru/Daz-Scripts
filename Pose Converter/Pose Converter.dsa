@@ -43,7 +43,7 @@
 
 /*
  * History:
- * 2024-12-31:
+ * 2024-01-03:
  * 		Initial release
  */
  
@@ -322,6 +322,9 @@ function loadMaps()
 	var additiveReset = [];
 	for (var i = 0; i < preset.scene.animations.length; ++i) {
 		var chn = preset.scene.animations[i];
+		if (!chn.url)
+			continue; // some presets have entries containing an empty key with no url, skip those
+		
 		var uri = new DzUri(chn.url);
 
 		// uri.nodePath -> bone name, first array element for hierarchical poses or second for non-hierarchical poses
