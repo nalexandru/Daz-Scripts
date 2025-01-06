@@ -18,6 +18,19 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+function clamp(val, min, max) { return Math.min(Math.max(val, min), max); }
+function mapInterval(val, i1_min, i1_max, i2_min, i2_max)
+{
+	if (val == 0)
+		return 0;
+						
+	i1_min_abs = Math.abs(i1_min);
+	i2_min_abs = Math.abs(i2_min);						
+						
+	var v = (clamp(val, i1_min, i1_max) + i1_min_abs) / (i1_min_abs + i1_max);
+	return v * (i2_min_abs + i2_max) - i2_min_abs;
+}
+
 (function()
 {
 	boneMaps["Generation3"] = [];
@@ -412,25 +425,40 @@
 	boneMaps["Generation3"]["Genesis9"] =
 	{
 		hip: { target: [{ name: "hip", additive: true }] },
-		pelvis: { target: [{ name: "hip", additive: true }] },
+		pelvis: { target: [
+			{ name: "rButtock", adj: [{ name: "rotation/x", apply: function (x) { return mapInterval(x, -25, 25, -38, 20); } }], whitelist: [ "rotation/x" ] },
+			{ name: "lButtock", adj: [{ name: "rotation/x", apply: function (x) { return mapInterval(x, -25, 25, -38, 20); } }], whitelist: [ "rotation/x" ] }
+		] },
 		l_thigh: { target: [	{ name: "lThigh", adj: [
-			{ name: "rotation/x", apply: function (x) { return x + 1.0 } },
-			{ name: "rotation/z", apply: function (x) { return x + 3.0 } }
+			{ name: "rotation/x", apply: function (x) { return x + 6.5 } },
+			{ name: "rotation/z", apply: function (x) { return x - 1.5 } }
 		] }] },
-		l_shin: { target: [{ name: "lShin" }] },
-		l_foot: { target: [{ name: "lFoot", adj: [{ name: "rotation/x", apply: function (x) { return x - 23.0 } }] }] },
+		l_shin: { target: [{ name: "lShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 6.0 } }] }] },
+		l_foot: { target: [{ name: "lFoot", adj: [{ name: "rotation/x", apply: function (x) { return x - 8.0 } }] }] },
 		l_toes: { target: [{ name: "lToe" }] },
 		r_thigh: { target: [	{ name: "rThigh", adj: [
-			{ name: "rotation/x", apply: function (x) { return x + 1.0 } },
-			{ name: "rotation/z", apply: function (x) { return x - 3.0 } }
+			{ name: "rotation/x", apply: function (x) { return x + 6.5 } },
+			{ name: "rotation/z", apply: function (x) { return x + 1.5 } }
 		] }] },
-		r_shin: { target: [{ name: "rShin" }] },
-		r_foot: { target: [{ name: "rFoot", adj: [{ name: "rotation/x", apply: function (x) { return x - 23.0 } }] }] },
+		r_shin: { target: [{ name: "rShin", adj: [{ name: "rotation/x", apply: function (x) { return x + 6.0 } }] }] },
+		r_foot: { target: [{ name: "rFoot", adj: [{ name: "rotation/x", apply: function (x) { return x - 8.0 } }] }] },
 		r_toes: { target: [{ name: "rToe" }] },
-		spine1: { target: [{ name: "abdomen", additive: true }] },
-		spine2: { target: [{ name: "abdomen", additive: true }] },
-		spine3: { target: [{ name: "chest", additive: true }] },
-		spine4: { target: [{ name: "chest", additive: true }] },
+		spine1: { target: [{ name: "abdomen", adj: [
+			{ name: "rotation/x", apply: function (x) { return mapInterval(x, -20, 35, -25, 40); } },
+			{ name: "rotation/y", apply: function (x) { return mapInterval(x, -15, 15, -18, 18); } },
+			{ name: "rotation/z", apply: function (x) { return mapInterval(x, -15, 15, -20, 40); } }
+		], additive: true }] },
+		spine2: { target: [{ name: "abdomen", adj: [
+			{ name: "rotation/y", apply: function (x) { return mapInterval(x, -15, 15, -18, 18); } },
+			{ name: "rotation/z", apply: function (x) { return mapInterval(x, -24, 24, -20, 20); } }
+		], additive: true }] },
+		spine3: { target: [{ name: "chest", adj: [
+			{ name: "rotation/x", apply: function (x) { return mapInterval(x, -20, 35, -20, 27); } }
+		], additive: true }] },
+		spine4: { target: [{ name: "chest", adj: [
+			{ name: "rotation/x", apply: function (x) { return mapInterval(x, -20, 35, -25, 40); } },
+			{ name: "rotation/z", apply: function (x) { return mapInterval(x, -10, 10, -7.5, 7.5); } }
+		], additive: true }] },
 		l_shoulder: { target: [{ name: "lCollar" }] },
 		l_upperarm: { target: [{ name: "lShldr", adj: [
 			{ name: "rotation/z", apply: function (x) { return x - 45.0 } },
@@ -438,49 +466,49 @@
 		] }] },
 		l_forearm: { target: [{ name: "lForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x + 5.5 } }] }] },
 		l_hand: { target: [{ name: "lHand", adj: [
-			{ name: "rotation/y", apply: function (x) { return x + 18.0 } },
+			{ name: "rotation/y", apply: function (x) { return x + 7.0 } },
 			{ name: "rotation/z", apply: function (x) { return x - 4.0 } }
 		] }] },
-		l_thumb1: { target: [{ name: "lThumb1", adj: [{ name: "rotation/x", apply: function (x) { return x + 14.0 } }] }] },
-		l_thumb2: { target: [{ name: "lThumb2", adj: [{ name: "rotation/z", apply: function (x) { return x + 12.0 } }] }] },
-		l_thumb3: { target: [{ name: "lThumb3", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.0 } }] }] },
-		l_index1: { target: [{ name: "lIndex1", adj: [{ name: "rotation/z", apply: function (x) { return x + 16.0 } }] }] },
-		l_index2: { target: [{ name: "lIndex2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.0 } }] }] },
-		l_index3: { target: [{ name: "lIndex3", adj: [{ name: "rotation/z", apply: function (x) { return x + 12.0 } }] }] },
-		l_mid1: { target: [{ name: "lMid1", adj: [{ name: "rotation/z", apply: function (x) { return x + 18.0 } }] }] },
-		l_mid2: { target: [{ name: "lMid2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.0 } }] }] },
-		l_mid3: { target: [{ name: "lMid3", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.0 } }] }] },
-		l_ring1: { target: [{ name: "lRing1", adj: [{ name: "rotation/z", apply: function (x) { return x + 25.0 } }] }] },
-		l_ring2: { target: [{ name: "lRing2", adj: [{ name: "rotation/z", apply: function (x) { return x + 12.0 } }] }] },
-		l_ring3: { target: [{ name: "lRing3", adj: [{ name: "rotation/z", apply: function (x) { return x + 9.70 } }] }] },
-		l_pinky1: { target: [{ name: "lPinky1", adj: [{ name: "rotation/z", apply: function (x) { return x + 30.0 } }] }] },
-		l_pinky2: { target: [{ name: "lPinky2", adj: [{ name: "rotation/z", apply: function (x) { return x + 20.0 } }] }] },
-		l_pinky3: { target: [{ name: "lPinky3", adj: [{ name: "rotation/z", apply: function (x) { return x + 6.0 } }] }] },		
-		r_collar: { target: [{ name: "rCollar" }] },
-		r_shoulder: { target: [{ name: "rShldr", adj: [
+		l_thumb1: { target: [{ name: "lThumb1" }] },
+		l_thumb2: { target: [{ name: "lThumb2" }] },
+		l_thumb3: { target: [{ name: "lThumb3" }] },
+		l_index1: { target: [{ name: "lIndex1" }] },
+		l_index2: { target: [{ name: "lIndex2" }] },
+		l_index3: { target: [{ name: "lIndex3" }] },
+		l_mid1: { target: [{ name: "lMid1" }] },
+		l_mid2: { target: [{ name: "lMid2" }] },
+		l_mid3: { target: [{ name: "lMid3" }] },
+		l_ring1: { target: [{ name: "lRing1" }] },
+		l_ring2: { target: [{ name: "lRing2" }] },
+		l_ring3: { target: [{ name: "lRing3" }] },
+		l_pinky1: { target: [{ name: "lPinky1" }] },
+		l_pinky2: { target: [{ name: "lPinky2" }] },
+		l_pinky3: { target: [{ name: "lPinky3" }] },		
+		r_shoulder: { target: [{ name: "rCollar" }] },
+		r_upperarm: { target: [{ name: "rShldr", adj: [
 			{ name: "rotation/z", apply: function (x) { return x + 45.0 } },
 			{ name: "rotation/y", apply: function (x) { return x - 3.0 } }
 		] }] },
 		r_forearm: { target: [{ name: "rForeArm", adj: [{ name: "rotation/y", apply: function (x) { return x - 5.5 } }] }] },
 		r_hand: { target: [{ name: "rHand", adj: [
-			{ name: "rotation/y", apply: function (x) { return x - 18.0 } },
+			{ name: "rotation/y", apply: function (x) { return x - 7.0 } },
 			{ name: "rotation/z", apply: function (x) { return x + 4.0 } }
 		] }] },
-		r_thumb1: { target: [{ name: "rThumb1", adj: [{ name: "rotation/x", apply: function (x) { return x - 14.0 } }] }] },
-		r_thumb2: { target: [{ name: "rThumb2", adj: [{ name: "rotation/z", apply: function (x) { return x - 12.0 } }] }] },
-		r_thumb3: { target: [{ name: "rThumb3", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.0 } }] }] },
-		r_index1: { target: [{ name: "rIndex1", adj: [{ name: "rotation/z", apply: function (x) { return x - 16.0 } }] }] },
-		r_index2: { target: [{ name: "rIndex2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.0 } }] }] },
-		r_index3: { target: [{ name: "rIndex3", adj: [{ name: "rotation/z", apply: function (x) { return x - 12.0 } }] }] },
-		r_mid1: { target: [{ name: "rMid1", adj: [{ name: "rotation/z", apply: function (x) { return x - 18.0 } }] }] },
-		r_mid2: { target: [{ name: "rMid2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.0 } }] }] },
-		r_mid3: { target: [{ name: "rMid3", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.0 } }] }] },
-		r_ring1: { target: [{ name: "rRing1", adj: [{ name: "rotation/z", apply: function (x) { return x - 25.0 } }] }] },
-		r_ring2: { target: [{ name: "rRing2", adj: [{ name: "rotation/z", apply: function (x) { return x - 12.0 } }] }] },
-		r_ring3: { target: [{ name: "rRing3", adj: [{ name: "rotation/z", apply: function (x) { return x - 9.70 } }] }] },
-		r_pinky1: { target: [{ name: "rPinky1", adj: [{ name: "rotation/z", apply: function (x) { return x - 30.0 } }] }] },
-		r_pinky2: { target: [{ name: "rPinky2", adj: [{ name: "rotation/z", apply: function (x) { return x - 20.0 } }] }] },
-		r_pinky3: { target: [{ name: "rPinky3", adj: [{ name: "rotation/z", apply: function (x) { return x - 6.0 } }] }] },
+		r_thumb1: { target: [{ name: "rThumb1" }] },
+		r_thumb2: { target: [{ name: "rThumb2" }] },
+		r_thumb3: { target: [{ name: "rThumb3" }] },
+		r_index1: { target: [{ name: "rIndex1" }] },
+		r_index2: { target: [{ name: "rIndex2" }] },
+		r_index3: { target: [{ name: "rIndex3" }] },
+		r_mid1: { target: [{ name: "rMid1" }] },
+		r_mid2: { target: [{ name: "rMid2" }] },
+		r_mid3: { target: [{ name: "rMid3" }] },
+		r_ring1: { target: [{ name: "rRing1" }] },
+		r_ring2: { target: [{ name: "rRing2" }] },
+		r_ring3: { target: [{ name: "rRing3" }] },
+		r_pinky1: { target: [{ name: "rPinky1" }] },
+		r_pinky2: { target: [{ name: "rPinky2" }] },
+		r_pinky3: { target: [{ name: "rPinky3" }] },
 		neck1: { target: [{ name: "neck" }] },
 		neck2: { target: [{ name: "head", additive: true }] },
 		head: { target: [{ name: "head", additive: true }] },
