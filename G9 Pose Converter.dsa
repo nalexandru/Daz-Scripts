@@ -726,10 +726,12 @@ function showFigureSelect()
 	App.log("installed = " + asset.isInstalled);
 	App.log("cloud installed = " + asset.isCloudInstalled);
 	App.log("file path = " + asset.getAsLocalFile());
+	App.log("rel path = " + asset.getRelativeFilePath());
 	App.log("uri = " + asset.toUri());
 	App.log("URL = " + asset.url);
+	App.log("cMgr = " + App.getContentMgr().getAbsolutePath(asset.getRelativeFilePath(), true));
 
-	var file = new DzGZFile(asset.getAsLocalFile());
+	var file = new DzGZFile(App.getContentMgr().getAbsolutePath(asset.getRelativeFilePath(), true));
 	if (!file.open(DzGZFile.ReadOnly)) {
 		MessageBox.critical(qsTr("Failed to open file"), qsTr("G9 Pose Converter"), qsTr("&OK"));
 		return;
